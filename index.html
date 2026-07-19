@@ -1,97 +1,159 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="my">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lumberjack Game</title>
+    <title>အဖွဲ့လိုက် ပြိုင်မောင်းမယ့် ကားဂိမ်း</title>
     <style>
-        body { margin: 0; background-color: #87CEEB; font-family: sans-serif; text-align: center; overflow: hidden; user-select: none; }
-        #game-container { position: relative; width: 100vw; height: 80vh; max-width: 400px; margin: 0 auto; background: linear-gradient(to bottom, #87CEEB 70%, #8B5A2B 30%); }
-        .score { font-size: 30px; font-weight: bold; color: white; margin-top: 20px; position: absolute; width: 100%; text-align: center; z-index: 10; text-shadow: 2px 2px 4px #000; }
-        .tree { position: absolute; bottom: 30%; left: 50%; transform: translateX(-50%); width: 60px; height: 60%; background-color: #8B4513; border-radius: 5px; }
-        .branch { position: absolute; width: 100px; height: 30px; background-color: #228B22; border-radius: 10px; display: none; }
-        .branch.left { left: -100px; }
-        .branch.right { right: -100px; }
-        .player { position: absolute; bottom: 30%; width: 50px; height: 70px; background-color: #FF4500; border-radius: 5px; transition: left 0.05s; }
-        .player.left { left: calc(50% - 110px); }
-        .player.right { left: calc(50% + 60px); }
-        .controls { display: flex; height: 20vh; max-width: 400px; margin: 0 auto; }
-        .btn { flex: 1; font-size: 24px; font-weight: bold; border: none; background-color: #4CAF50; color: white; cursor: pointer; }
-        .btn:active { background-color: #3e8e41; }
-        #btn-left { border-right: 2px solid #fff; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #222; font-family: sans-serif; overflow: hidden; text-align: center; user-select: none; }
+        #gameContainer { position: relative; width: 100vw; height: 100vh; display: block; }
+        
+        /* ဂိမ်းကွင်းပြင် */
+        #gameCanvas { background: #333; width: 100%; max-width: 400px; height: 70vh; margin: 0 auto; display: block; border-left: 10px dashed #fff; border-right: 10px dashed #fff; position: relative; overflow: hidden; }
+        
+        /* ရမှတ် ပြသရန် */
+        #scoreBoard { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 24px; font-weight: bold; background: rgba(0,0,0,0.6); padding: 5px 15px; border-radius: 20px; z-index: 10; }
+        
+        /* ကားများ */
+        .car { position: absolute; width: 45px; height: 75px; border-radius: 5px; }
+        #player { background: #ff3333; left: 175px; bottom: 20px; box-shadow: 0 0 10px #ff3333; }
+        .enemy { background: #00bcd4; top: -80px; box-shadow: 0 0 10px #00bcd4; }
+        
+        /* ဖုန်းဖြင့် ဆော့ရန် ခလုတ်များ */
+        #controls { width: 100%; max-width: 400px; height: 25vh; margin: 0 auto; background: #111; display: block; position: relative; }
+        .btn { width: 50%; height: 100%; float: left; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; font-weight: bold; text-transform: uppercase; border: 2px solid #333; cursor: pointer; line-height: 25vh; text-align: center; }
+        #leftBtn { background: #2e7d32; }
+        #rightBtn { background: #1565c0; }
+        .btn:active { opacity: 0.7; }
+        
+        /* Game Over Screen */
+        #gameOverScreen { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); color: #fff; flex-direction: column; align-items: center; justify-content: center; z-index: 20; text-align: center; padding-top: 25vh; }
+        #gameOverScreen h1 { color: #ff3333; font-size: 40px; margin-bottom: 10px; }
+        #restartBtn { background: #ff9800; color: white; border: none; padding: 12px 30px; font-size: 20px; font-weight: bold; border-radius: 5px; margin-top: 15px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="game-container">
-        <div class="score" id="score-display">Score: 0</div>
-        <div class="tree">
-            <!-- သစ်ကိုင်းများ -->
-            <div id="branch-1" class="branch"></div>
-            <div id="branch-2" class="branch" style="bottom: 150px;"></div>
-            <div id="branch-3" class="branch" style="bottom: 300px;"></div>
-        </div>
-        <div id="player" class="player left">🧍🪓</div>
+<div id="gameContainer">
+    <div id="gameCanvas">
+        <div id="scoreBoard">Score: <span id="score">0</span></div>
+        <div id="player" class="car"></div>
+    </div>
+    
+    <!-- Game Over ပြမယ့်နေရာ -->
+    <div id="gameOverScreen">
+        <h1>GAME OVER</h1>
+        <p>သင့်ရမှတ်: <span id="finalScore">0</span></p>
+        <button id="restartBtn" onclick="resetGame()">ပြန်ဆော့မယ်</button>
     </div>
 
-    <div class="controls">
-        <button class="btn" id="btn-left">⬅️ Left</button>
-        <button class="btn" id="btn-right">Right ➡️</button>
+    <!-- ဖုန်းထိန်းချုပ်ခလုတ်များ -->
+    <div id="controls">
+        <div id="leftBtn" class="btn">⬅️ ဘယ်</div>
+        <div id="rightBtn" class="btn">ညာ ➡️</div>
     </div>
+</div>
 
-    <script>
-        let score = 0;
-        let playerSide = 'left';
-        let branches = ['none', 'left', 'right'];
-        
-        const player = document.getElementById('player');
-        const scoreDisplay = document.getElementById('score-display');
-        const branchElems = [
-            document.getElementById('branch-1'),
-            document.getElementById('branch-2'),
-            document.getElementById('branch-3')
-        ];
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const player = document.getElementById('player');
+    const scoreDisplay = document.getElementById('score');
+    const finalScoreDisplay = document.getElementById('finalScore');
+    const gameOverScreen = document.getElementById('gameOverScreen');
+    
+    let canvasWidth = canvas.clientWidth || 360;
+    let playerX = 150;
+    let score = 0;
+    let isGameOver = false;
+    let enemies = [];
+    let gameInterval, enemyInterval;
+    let moveLeft = false, moveRight = false;
 
-        function updateBranches() {
-            branches.shift();
-            let rand = Math.random();
-            if (rand < 0.4) branches.push('left');
-            else if (rand < 0.8) branches.push('right');
-            else branches.push('none');
+    // ကားရွှေ့ရန် ခလုတ်များ ချိတ်ဆက်ခြင်း
+    document.getElementById('leftBtn').addEventListener('touchstart', (e) => { e.preventDefault(); moveLeft = true; });
+    document.getElementById('leftBtn').addEventListener('touchend', (e) => { e.preventDefault(); moveLeft = false; });
+    document.getElementById('rightBtn').addEventListener('touchstart', (e) => { e.preventDefault(); moveRight = true; });
+    document.getElementById('rightBtn').addEventListener('touchend', (e) => { e.preventDefault(); moveRight = false; });
+    
+    // PC & Mouse / Click fallback
+    document.getElementById('leftBtn').addEventListener('mousedown', () => moveLeft = true);
+    document.getElementById('leftBtn').addEventListener('mouseup', () => moveLeft = false);
+    document.getElementById('rightBtn').addEventListener('mousedown', () => moveRight = true);
+    document.getElementById('rightBtn').addEventListener('mouseup', () => moveRight = false);
 
-            for (let i = 0; i < 3; i++) {
-                branchElems[i].style.display = 'none';
-                branchElems[i].classList.remove('left', 'right');
-                if (branches[i] !== 'none') {
-                    branchElems[i].style.display = 'block';
-                    branchElems[i].classList.add(branches[i]);
+    document.addEventListener('keydown', (e) => {
+        if(e.key === 'ArrowLeft') moveLeft = true;
+        if(e.key === 'ArrowRight') moveRight = true;
+    });
+    document.addEventListener('keyup', (e) => {
+        if(e.key === 'ArrowLeft') moveLeft = false;
+        if(e.key === 'ArrowRight') moveRight = false;
+    });
+
+    function createEnemy() {
+        if (isGameOver) return;
+        const enemy = document.createElement('div');
+        enemy.classList.add('car', 'enemy');
+        const randomX = Math.floor(Math.random() * (canvasWidth - 55));
+        enemy.style.left = randomX + 'px';
+        canvas.appendChild(enemy);
+        enemies.push({ element: enemy, top: -80, left: randomX });
+    }
+
+    function updateGame() {
+        if (isGameOver) return;
+
+        // Player ရွှေ့ခြင်း
+        if (moveLeft && playerX > 10) playerX -= 6;
+        if (moveRight && playerX < (canvasWidth - 60)) playerX += 6;
+        player.style.left = playerX + 'px';
+
+        // ရန်သူကားများ ရွှေ့ခြင်း
+        for (let i = enemies.length - 1; i >= 0; i--) {
+            let enemy = enemies[i];
+            enemy.top += 7;
+            enemy.element.style.top = enemy.top + 'px';
+
+            if (enemy.top > canvas.clientHeight) {
+                enemy.element.remove();
+                enemies.splice(i, 1);
+                score += 10;
+                scoreDisplay.innerText = score;
+            }
+
+            // တိုက်မိခြင်း ရှိ/မရှိ စစ်ဆေးခြင်း
+            if (enemy.top + 75 > (canvas.clientHeight - 95) && enemy.top < (canvas.clientHeight - 20)) {
+                if (playerX < enemy.left + 45 && playerX + 45 > enemy.left) {
+                    endGame();
                 }
             }
         }
+    }
 
-        function chop(side) {
-            playerSide = side;
-            if (side === 'left') {
-                player.className = 'player left';
-            } else {
-                player.className = 'player right';
-            }
+    function endGame() {
+        isGameOver = true;
+        clearInterval(gameInterval);
+        clearInterval(enemyInterval);
+        finalScoreDisplay.innerText = score;
+        gameOverScreen.style.display = 'block';
+    }
 
-            if (branches[0] === playerSide) {
-                alert("💥 ဒုန်း! သစ်ကိုင်းနဲ့ တိုက်မိလို့ ရှုံးသွားပါပြီ။ Score: " + score);
-                score = 0;
-                branches = ['none', 'left', 'right'];
-            } else {
-                score++;
-                updateBranches();
-            }
-            scoreDisplay.innerText = "Score: " + score;
-        }
-
-        document.getElementById('btn-left').addEventListener('click', () => chop('left'));
-        document.getElementById('btn-right').addEventListener('click', () => chop('right'));
+    function resetGame() {
+        enemies.forEach(e => e.element.remove());
+        enemies = [];
+        score = 0;
+        playerX = 150;
+        isGameOver = false;
+        scoreDisplay.innerText = score;
+        gameOverScreen.style.display = 'none';
         
-        updateBranches();
-    </script>
+        gameInterval = setInterval(updateGame, 20);
+        enemyInterval = setInterval(createEnemy, 1000);
+    }
+
+    gameInterval = setInterval(updateGame, 20);
+    enemyInterval = setInterval(createEnemy, 1000);
+</script>
 </body>
 </html>
