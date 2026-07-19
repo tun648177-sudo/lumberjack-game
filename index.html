@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lumberjack Game</title>
+    <style>
+        body { margin: 0; background-color: #87CEEB; font-family: sans-serif; text-align: center; overflow: hidden; user-select: none; }
+        #game-container { position: relative; width: 100vw; height: 80vh; max-width: 400px; margin: 0 auto; background: linear-gradient(to bottom, #87CEEB 70%, #8B5A2B 30%); }
+        .score { font-size: 30px; font-weight: bold; color: white; margin-top: 20px; position: absolute; width: 100%; text-align: center; z-index: 10; text-shadow: 2px 2px 4px #000; }
+        .tree { position: absolute; bottom: 30%; left: 50%; transform: translateX(-50%); width: 60px; height: 60%; background-color: #8B4513; border-radius: 5px; }
+        .branch { position: absolute; width: 100px; height: 30px; background-color: #228B22; border-radius: 10px; display: none; }
+        .branch.left { left: -100px; }
+        .branch.right { right: -100px; }
+        .player { position: absolute; bottom: 30%; width: 50px; height: 70px; background-color: #FF4500; border-radius: 5px; transition: left 0.05s; }
+        .player.left { left: calc(50% - 110px); }
+        .player.right { left: calc(50% + 60px); }
+        .controls { display: flex; height: 20vh; max-width: 400px; margin: 0 auto; }
+        .btn { flex: 1; font-size: 24px; font-weight: bold; border: none; background-color: #4CAF50; color: white; cursor: pointer; }
+        .btn:active { background-color: #3e8e41; }
+        #btn-left { border-right: 2px solid #fff; }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <div class="score" id="score-display">Score: 0</div>
+        <div class="tree">
+            <!-- သစ်ကိုင်းများ -->
+            <div id="branch-1" class="branch"></div>
+            <div id="branch-2" class="branch" style="bottom: 150px;"></div>
+            <div id="branch-3" class="branch" style="bottom: 300px;"></div>
+        </div>
+        <div id="player" class="player left">🧍🪓</div>
+    </div>
+
+    <div class="controls">
+        <button class="btn" id="btn-left">⬅️ Left</button>
+        <button class="btn" id="btn-right">Right ➡️</button>
+    </div>
+
+    <script>
+        let score = 0;
+        let playerSide = 'left';
+        let branches = ['none', 'left', 'right'];
+        
+        const player = document.getElementById('player');
+        const scoreDisplay = document.getElementById('score-display');
+        const branchElems = [
+            document.getElementById('branch-1'),
+            document.getElementById('branch-2'),
+            document.getElementById('branch-3')
+        ];
+
+        function updateBranches() {
+            branches.shift();
+            let rand = Math.random();
+            if (rand < 0.4) branches.push('left');
+            else if (rand < 0.8) branches.push('right');
+            else branches.push('none');
+
+            for (let i = 0; i < 3; i++) {
+                branchElems[i].style.display = 'none';
+                branchElems[i].classList.remove('left', 'right');
+                if (branches[i] !== 'none') {
+                    branchElems[i].style.display = 'block';
+                    branchElems[i].classList.add(branches[i]);
+                }
+            }
+        }
+
+        function chop(side) {
+            playerSide = side;
+            if (side === 'left') {
+                player.className = 'player left';
+            } else {
+                player.className = 'player right';
+            }
+
+            if (branches[0] === playerSide) {
+                alert("💥 ဒုန်း! သစ်ကိုင်းနဲ့ တိုက်မိလို့ ရှုံးသွားပါပြီ။ Score: " + score);
+                score = 0;
+                branches = ['none', 'left', 'right'];
+            } else {
+                score++;
+                updateBranches();
+            }
+            scoreDisplay.innerText = "Score: " + score;
+        }
+
+        document.getElementById('btn-left').addEventListener('click', () => chop('left'));
+        document.getElementById('btn-right').addEventListener('click', () => chop('right'));
+        
+        updateBranches();
+    </script>
+</body>
+</html>
