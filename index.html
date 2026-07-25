@@ -4,548 +4,850 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
-<title>LumberJack Game</title>
+<title>LumberJack</title>
 
 <style>
+
 *{
-box-sizing:border-box;
-user-select:none;
--webkit-user-select:none;
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    user-select:none;
+    -webkit-user-select:none;
+    -webkit-tap-highlight-color:transparent;
 }
 
-html,body{
-margin:0;
-width:100%;
-height:100%;
-overflow:hidden;
-font-family:Arial,sans-serif;
+html,
+body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
 }
 
 body{
-background:#75cfff;
+    background:#79d0f5;
 }
 
 #game{
-position:relative;
-width:100%;
-max-width:520px;
-height:100vh;
-height:100dvh;
-margin:auto;
-overflow:hidden;
-background:linear-gradient(
-#70cfff 0%,
-#ccefff 52%,
-#70b84e 52%,
-#438d35 100%
-);
+    position:relative;
+    width:100%;
+    max-width:520px;
+    height:100vh;
+    height:100dvh;
+    margin:auto;
+    overflow:hidden;
+
+    background:
+    linear-gradient(
+        to bottom,
+        #72cef4 0%,
+        #c8efff 52%,
+        #79bd56 52%,
+        #4d9639 100%
+    );
 }
 
-/* SKY */
+/* =========================
+   SKY
+========================= */
 
 .sun{
-position:absolute;
-top:65px;
-right:25px;
-width:65px;
-height:65px;
-border-radius:50%;
-background:#ffe66d;
-box-shadow:0 0 30px rgba(255,230,109,.8);
+    position:absolute;
+    width:65px;
+    height:65px;
+    right:25px;
+    top:70px;
+    border-radius:50%;
+    background:#ffe66d;
+    box-shadow:0 0 30px rgba(255,230,109,.8);
 }
 
 .cloud{
-position:absolute;
-width:105px;
-height:30px;
-border-radius:30px;
-background:white;
-opacity:.85;
+    position:absolute;
+    width:110px;
+    height:30px;
+    border-radius:30px;
+    background:white;
+    opacity:.85;
 }
 
 .cloud:before,
 .cloud:after{
-content:"";
-position:absolute;
-border-radius:50%;
-background:white;
+    content:"";
+    position:absolute;
+    border-radius:50%;
+    background:white;
 }
 
 .cloud:before{
-width:45px;
-height:45px;
-left:15px;
-top:-20px;
+    width:48px;
+    height:48px;
+    left:12px;
+    top:-22px;
 }
 
 .cloud:after{
-width:55px;
-height:55px;
-right:10px;
-top:-28px;
+    width:58px;
+    height:58px;
+    right:8px;
+    top:-28px;
 }
 
 .cloud1{
-top:105px;
-left:5%;
+    left:5%;
+    top:105px;
 }
 
 .cloud2{
-top:190px;
-right:5%;
-transform:scale(.7);
+    right:5%;
+    top:190px;
+    transform:scale(.7);
 }
 
-/* HEADER */
+/* =========================
+   HEADER
+========================= */
 
 #header{
-position:absolute;
-top:10px;
-left:0;
-width:100%;
-text-align:center;
-z-index:100;
+    position:absolute;
+    top:10px;
+    left:0;
+    width:100%;
+    text-align:center;
+    z-index:100;
 }
 
 .title{
-color:white;
-font-size:30px;
-font-weight:900;
-text-shadow:3px 3px 0 #583219;
+    color:white;
+    font-size:30px;
+    font-weight:900;
+    letter-spacing:1px;
+    text-shadow:
+        3px 3px 0 #5a321a,
+        0 4px 8px rgba(0,0,0,.3);
 }
 
 .stats{
-display:flex;
-justify-content:center;
-gap:8px;
-margin-top:7px;
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin-top:8px;
 }
 
 .stat{
-padding:7px 15px;
-border-radius:20px;
-background:rgba(0,0,0,.45);
-color:white;
-font-size:18px;
-font-weight:bold;
+    min-width:95px;
+    padding:7px 15px;
+    border-radius:20px;
+    color:white;
+    background:rgba(0,0,0,.45);
+    font-size:18px;
+    font-weight:bold;
 }
 
 #time{
-background:#e74c3c;
+    background:#e74c3c;
 }
 
 #rankButton{
-position:absolute;
-top:12px;
-right:10px;
-z-index:110;
-padding:9px 12px;
-border:0;
-border-radius:15px;
-background:white;
-font-weight:bold;
+    position:absolute;
+    top:12px;
+    right:10px;
+    z-index:150;
+
+    padding:9px 12px;
+    border:0;
+    border-radius:15px;
+
+    background:white;
+    color:#333;
+    font-size:14px;
+    font-weight:bold;
+
+    box-shadow:0 3px 8px rgba(0,0,0,.2);
 }
 
-/* TREE */
+/* =========================
+   TREE
+========================= */
 
 #tree{
-position:absolute;
-left:50%;
-bottom:95px;
-width:190px;
-height:520px;
-transform:translateX(-50%);
+    position:absolute;
+    left:50%;
+    bottom:95px;
+
+    width:220px;
+    height:530px;
+
+    transform:translateX(-50%);
 }
+
+/* MAIN TRUNK */
 
 #trunk{
-position:absolute;
-left:75px;
-bottom:0;
-width:40px;
-height:100%;
-border-radius:10px;
-background:linear-gradient(
-90deg,
-#5b2e0d,
-#a45e27,
-#71360e
-);
-box-shadow:4px 0 12px rgba(0,0,0,.3);
+    position:absolute;
+
+    left:85px;
+    bottom:0;
+
+    width:50px;
+    height:100%;
+
+    border-radius:12px 12px 5px 5px;
+
+    background:
+    linear-gradient(
+        90deg,
+        #542b0c 0%,
+        #8b4d1c 25%,
+        #b86c2c 48%,
+        #7a3f14 70%,
+        #4d270b 100%
+    );
+
+    box-shadow:
+        4px 0 10px rgba(0,0,0,.25);
 }
 
-/* BRANCH */
+/* TREE LINES */
+
+#trunk:before{
+    content:"";
+
+    position:absolute;
+
+    left:12px;
+    top:20px;
+
+    width:4px;
+    height:90%;
+
+    border-radius:5px;
+
+    background:rgba(70,30,5,.35);
+
+    box-shadow:
+        12px 50px rgba(70,30,5,.25),
+        0 120px rgba(70,30,5,.25),
+        15px 190px rgba(70,30,5,.25),
+        2px 280px rgba(70,30,5,.25),
+        15px 360px rgba(70,30,5,.25);
+}
+
+/* =========================
+   REAL BRANCH
+========================= */
 
 .branch{
-position:absolute;
-width:120px;
-height:30px;
-border-radius:20px;
-background:linear-gradient(
-#4dbd42,
-#176e28
-);
-box-shadow:0 4px 7px rgba(0,0,0,.25);
-z-index:5;
+    position:absolute;
+
+    width:105px;
+    height:22px;
+
+    z-index:20;
+
+    background:
+    linear-gradient(
+        to bottom,
+        #9b5720,
+        #6a350e
+    );
+
+    border-radius:10px;
+
+    box-shadow:
+        2px 3px 5px rgba(0,0,0,.25);
+
+    transition:
+        bottom .12s linear;
 }
 
-.branch:before,
-.branch:after{
-content:"";
-position:absolute;
-width:48px;
-height:48px;
-border-radius:50%;
-background:#2f9637;
-}
-
-.branch:before{
-left:10px;
-top:-25px;
-}
-
-.branch:after{
-right:10px;
-top:-22px;
-}
+/* LEFT BRANCH */
 
 .branch.left{
-left:-50px;
+    left:-62px;
+    transform:rotate(-8deg);
+    transform-origin:right center;
 }
+
+/* RIGHT BRANCH */
 
 .branch.right{
-right:-50px;
+    right:-62px;
+    transform:rotate(8deg);
+    transform-origin:left center;
 }
 
-/* PLAYER */
+/* SMALL TWIG */
+
+.branch:before{
+    content:"";
+
+    position:absolute;
+
+    width:55px;
+    height:13px;
+
+    top:-18px;
+
+    border-radius:10px;
+
+    background:
+    linear-gradient(
+        #9b5720,
+        #68330e
+    );
+}
+
+/* TWIG POSITION */
+
+.branch.left:before{
+    left:35px;
+    transform:rotate(-35deg);
+}
+
+.branch.right:before{
+    right:35px;
+    transform:rotate(35deg);
+}
+
+/* LEAVES */
+
+.branch:after{
+    content:"🍃";
+
+    position:absolute;
+
+    font-size:38px;
+
+    line-height:1;
+}
+
+/* LEFT LEAVES */
+
+.branch.left:after{
+    left:5px;
+    top:-38px;
+
+    transform:
+        rotate(-25deg);
+}
+
+/* RIGHT LEAVES */
+
+.branch.right:after{
+    right:5px;
+    top:-38px;
+
+    transform:
+        scaleX(-1)
+        rotate(-25deg);
+}
+
+/* =========================
+   PLAYER
+========================= */
 
 #player{
-position:absolute;
-left:50%;
-bottom:48px;
-width:135px;
-height:180px;
-transform:translateX(-50%);
-z-index:50;
-transition:transform .12s ease;
+    position:absolute;
+
+    left:50%;
+    bottom:45px;
+
+    width:145px;
+    height:185px;
+
+    transform:translateX(-50%);
+
+    z-index:70;
+
+    transition:
+        transform .12s ease;
 }
 
 /* HAT */
 
 .hat{
-position:absolute;
-top:3px;
-left:30px;
-width:70px;
-height:25px;
-border-radius:50%;
-background:#d93636;
-z-index:10;
+    position:absolute;
+
+    top:2px;
+    left:32px;
+
+    width:72px;
+    height:26px;
+
+    border-radius:50%;
+
+    background:
+    linear-gradient(
+        #e7473d,
+        #b72c29
+    );
+
+    z-index:15;
 }
 
 .hat:after{
-content:"";
-position:absolute;
-left:-8px;
-bottom:-5px;
-width:86px;
-height:8px;
-border-radius:10px;
-background:#a92525;
+    content:"";
+
+    position:absolute;
+
+    left:-9px;
+    bottom:-5px;
+
+    width:90px;
+    height:9px;
+
+    border-radius:10px;
+
+    background:#a92525;
 }
 
 /* HAIR */
 
 .hair{
-position:absolute;
-top:17px;
-left:39px;
-width:56px;
-height:23px;
-border-radius:50%;
-background:#442817;
-z-index:7;
+    position:absolute;
+
+    top:17px;
+    left:42px;
+
+    width:55px;
+    height:25px;
+
+    border-radius:
+        50%
+        50%
+        20%
+        20%;
+
+    background:#422716;
+
+    z-index:10;
 }
 
 /* HEAD */
 
 .head{
-position:absolute;
-top:25px;
-left:43px;
-width:48px;
-height:48px;
-border-radius:50%;
-background:#f2b37d;
-border:3px solid #9b5d35;
-z-index:5;
+    position:absolute;
+
+    top:26px;
+    left:47px;
+
+    width:50px;
+    height:50px;
+
+    border-radius:50%;
+
+    background:#f2b37d;
+
+    border:3px solid #985a33;
+
+    z-index:8;
 }
+
+/* EYES */
 
 .head:before{
-content:"";
-position:absolute;
-top:18px;
-left:11px;
-width:5px;
-height:5px;
-border-radius:50%;
-background:#222;
-box-shadow:18px 0 #222;
+    content:"";
+
+    position:absolute;
+
+    top:19px;
+    left:11px;
+
+    width:5px;
+    height:5px;
+
+    border-radius:50%;
+
+    background:#222;
+
+    box-shadow:
+        19px 0 #222;
 }
 
+/* MOUTH */
+
 .head:after{
-content:"";
-position:absolute;
-left:15px;
-bottom:7px;
-width:16px;
-height:5px;
-border-bottom:2px solid #63351e;
-border-radius:50%;
+    content:"";
+
+    position:absolute;
+
+    left:16px;
+    bottom:7px;
+
+    width:16px;
+    height:6px;
+
+    border-bottom:
+        2px solid #63351e;
+
+    border-radius:50%;
 }
 
 /* BODY */
 
 .body{
-position:absolute;
-top:70px;
-left:36px;
-width:62px;
-height:72px;
-border-radius:18px 18px 10px 10px;
-background:linear-gradient(
-#e84a3c,
-#a92f2a
-);
-z-index:4;
+    position:absolute;
+
+    top:72px;
+    left:38px;
+
+    width:65px;
+    height:75px;
+
+    border-radius:
+        18px
+        18px
+        10px
+        10px;
+
+    background:
+    linear-gradient(
+        #e94c3e,
+        #a82f29
+    );
+
+    z-index:6;
 }
 
 /* ARMS */
 
 .arm{
-position:absolute;
-top:74px;
-width:19px;
-height:62px;
-border-radius:12px;
-background:#f2b37d;
-z-index:3;
+    position:absolute;
+
+    top:75px;
+
+    width:20px;
+    height:64px;
+
+    border-radius:12px;
+
+    background:#f2b37d;
+
+    z-index:5;
+
+    transform-origin:top center;
 }
 
 .arm.left{
-left:22px;
-transform:rotate(25deg);
+    left:23px;
+    transform:rotate(24deg);
 }
 
 .arm.right{
-right:20px;
-transform:rotate(-30deg);
+    right:21px;
+    transform:rotate(-28deg);
 }
 
 /* LEGS */
 
 .leg{
-position:absolute;
-top:135px;
-width:23px;
-height:45px;
-border-radius:8px;
-background:#34495e;
+    position:absolute;
+
+    top:140px;
+
+    width:24px;
+    height:45px;
+
+    border-radius:8px;
+
+    background:#34495e;
+
+    z-index:4;
 }
 
 .leg.left{
-left:38px;
+    left:40px;
 }
 
 .leg.right{
-right:29px;
+    right:31px;
 }
 
 /* AXE */
 
 .axe{
-position:absolute;
-top:50px;
-right:-30px;
-font-size:62px;
-transform:rotate(-35deg);
-z-index:20;
-transition:transform .13s ease;
+    position:absolute;
+
+    top:55px;
+    right:-35px;
+
+    font-size:58px;
+
+    z-index:30;
+
+    transform:
+        rotate(-35deg);
+
+    transition:
+        transform .12s ease;
 }
 
-/* CHOP ANIMATION */
+/* CHOP LEFT */
 
 #player.leftHit{
-transform:translateX(-50%) rotate(-8deg);
-}
-
-#player.rightHit{
-transform:translateX(-50%) rotate(8deg);
+    transform:
+        translateX(-50%)
+        rotate(-8deg);
 }
 
 #player.leftHit .axe{
-transform:rotate(-120deg) translate(-10px,20px);
+    transform:
+        rotate(-115deg)
+        translate(-10px,15px);
+}
+
+/* CHOP RIGHT */
+
+#player.rightHit{
+    transform:
+        translateX(-50%)
+        rotate(8deg);
 }
 
 #player.rightHit .axe{
-transform:rotate(-65deg) translate(10px,15px);
+    transform:
+        rotate(-65deg)
+        translate(10px,15px);
 }
 
-/* BUTTONS */
+/* =========================
+   BUTTONS
+========================= */
 
 #buttons{
-position:absolute;
-left:0;
-bottom:15px;
-width:100%;
-display:flex;
-justify-content:center;
-gap:18px;
-z-index:100;
+    position:absolute;
+
+    left:0;
+    bottom:14px;
+
+    width:100%;
+
+    display:flex;
+    justify-content:center;
+
+    gap:18px;
+
+    z-index:100;
 }
 
 .control{
-width:140px;
-height:65px;
-border:0;
-border-radius:20px;
-background:linear-gradient(
-#3498db,
-#236da5
-);
-color:white;
-font-size:32px;
-font-weight:bold;
-box-shadow:0 6px 0 #154d73;
+    width:140px;
+    height:65px;
+
+    border:0;
+    border-radius:20px;
+
+    color:white;
+
+    font-size:30px;
+    font-weight:bold;
+
+    background:
+    linear-gradient(
+        #3498db,
+        #236da5
+    );
+
+    box-shadow:
+        0 6px 0 #154d73,
+        0 8px 15px rgba(0,0,0,.25);
 }
 
 .control:active{
-transform:translateY(5px);
-box-shadow:0 1px 0 #154d73;
+    transform:translateY(5px);
+
+    box-shadow:
+        0 1px 0 #154d73;
 }
 
-/* HIT EFFECT */
+/* =========================
+   HIT EFFECT
+========================= */
 
 .hit{
-position:absolute;
-left:50%;
-bottom:310px;
-font-size:45px;
-z-index:300;
-animation:hit .4s ease-out forwards;
+    position:absolute;
+
+    left:50%;
+    bottom:315px;
+
+    z-index:300;
+
+    font-size:45px;
+
+    pointer-events:none;
+
+    animation:
+        hitAnimation .4s ease-out forwards;
 }
 
-@keyframes hit{
+@keyframes hitAnimation{
 
-0%{
-opacity:1;
-transform:translateX(-50%) scale(.5);
+    0%{
+        opacity:1;
+
+        transform:
+            translateX(-50%)
+            scale(.5);
+    }
+
+    100%{
+        opacity:0;
+
+        transform:
+            translateX(-50%)
+            translateY(-60px)
+            scale(1.5);
+    }
+
 }
 
-100%{
-opacity:0;
-transform:
-translateX(-50%)
-translateY(-60px)
-scale(1.5);
-}
-
-}
-
-/* GAME OVER */
+/* =========================
+   GAME OVER
+========================= */
 
 #gameOver{
-position:absolute;
-inset:0;
-display:none;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-z-index:500;
-background:rgba(0,0,0,.86);
-color:white;
+    position:absolute;
+
+    inset:0;
+
+    display:none;
+
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    z-index:500;
+
+    background:
+        rgba(0,0,0,.86);
+
+    color:white;
 }
 
 #gameOver h1{
-margin:0 0 15px;
-font-size:45px;
-color:#ffe066;
-text-shadow:3px 3px #000;
+    margin-bottom:15px;
+
+    color:#ffe066;
+
+    font-size:45px;
+
+    text-shadow:
+        3px 3px #000;
 }
 
 .result{
-font-size:24px;
-margin:5px;
+    margin:5px;
+
+    font-size:24px;
 }
 
 .restart{
-margin-top:20px;
-width:210px;
-height:60px;
-border:0;
-border-radius:18px;
-background:#2ecc71;
-color:white;
-font-size:20px;
-font-weight:bold;
-box-shadow:0 5px 0 #1e8449;
+    width:210px;
+    height:60px;
+
+    margin-top:20px;
+
+    border:0;
+    border-radius:18px;
+
+    color:white;
+
+    background:#2ecc71;
+
+    font-size:20px;
+    font-weight:bold;
+
+    box-shadow:
+        0 5px 0 #1e8449;
 }
 
-/* RANKING */
+/* =========================
+   RANKING
+========================= */
 
 #rankingPage{
-position:absolute;
-inset:0;
-display:none;
-flex-direction:column;
-align-items:center;
-z-index:600;
-padding:30px 20px;
-background:rgba(10,20,30,.97);
-color:white;
+    position:absolute;
+
+    inset:0;
+
+    display:none;
+
+    flex-direction:column;
+    align-items:center;
+
+    z-index:600;
+
+    padding:30px 20px;
+
+    color:white;
+
+    background:
+        rgba(10,20,30,.97);
 }
 
 #rankingPage h2{
-color:#ffe066;
-font-size:30px;
+    color:#ffe066;
+
+    font-size:30px;
+
+    margin-bottom:15px;
 }
 
 #rankingList{
-width:100%;
-max-width:400px;
-max-height:60vh;
-overflow-y:auto;
+    width:100%;
+    max-width:400px;
+
+    max-height:60vh;
+
+    overflow-y:auto;
 }
 
 .rank{
-display:flex;
-justify-content:space-between;
-padding:13px 15px;
-margin:7px 0;
-border-radius:12px;
-background:rgba(255,255,255,.1);
-font-size:18px;
+    display:flex;
+
+    justify-content:space-between;
+    align-items:center;
+
+    padding:13px 15px;
+
+    margin:7px 0;
+
+    border-radius:12px;
+
+    background:
+        rgba(255,255,255,.1);
+
+    font-size:18px;
 }
 
 .rank:first-child{
-background:rgba(255,215,0,.25);
+    background:
+        rgba(255,215,0,.25);
 }
 
 .rank:nth-child(2){
-background:rgba(192,192,192,.2);
+    background:
+        rgba(192,192,192,.2);
 }
 
 .rank:nth-child(3){
-background:rgba(205,127,50,.25);
+    background:
+        rgba(205,127,50,.25);
 }
 
 .back{
-margin-top:18px;
-width:180px;
-height:50px;
-border:0;
-border-radius:15px;
-font-size:18px;
-font-weight:bold;
+    width:180px;
+    height:50px;
+
+    margin-top:18px;
+
+    border:0;
+    border-radius:15px;
+
+    font-size:18px;
+    font-weight:bold;
 }
 
 </style>
@@ -556,6 +858,7 @@ font-weight:bold;
 <div id="game">
 
 <div class="sun"></div>
+
 <div class="cloud cloud1"></div>
 <div class="cloud cloud2"></div>
 
@@ -581,9 +884,11 @@ font-weight:bold;
 
 </div>
 
-<button id="rankButton" onclick="openRanking()">
+<button id="rankButton"
+onclick="openRanking()">
 🏆 Ranking
 </button>
+
 
 <!-- TREE -->
 
@@ -593,27 +898,35 @@ font-weight:bold;
 
 </div>
 
+
 <!-- PLAYER -->
 
 <div id="player">
 
 <div class="hat"></div>
+
 <div class="hair"></div>
+
 <div class="head"></div>
 
 <div class="body"></div>
 
 <div class="arm left"></div>
+
 <div class="arm right"></div>
 
 <div class="leg left"></div>
+
 <div class="leg right"></div>
 
-<div class="axe">🪓</div>
+<div class="axe">
+🪓
+</div>
 
 </div>
 
-<!-- BUTTONS -->
+
+<!-- CONTROLS -->
 
 <div id="buttons">
 
@@ -629,11 +942,14 @@ onclick="chop('right')">
 
 </div>
 
+
 <!-- GAME OVER -->
 
 <div id="gameOver">
 
-<h1>GAME OVER</h1>
+<h1>
+GAME OVER
+</h1>
 
 <div class="result">
 🏆 Score:
@@ -657,11 +973,14 @@ onclick="openRanking()">
 
 </div>
 
+
 <!-- RANKING -->
 
 <div id="rankingPage">
 
-<h2>🏆 LEADERBOARD</h2>
+<h2>
+🏆 LEADERBOARD
+</h2>
 
 <div id="rankingList"></div>
 
@@ -672,407 +991,546 @@ onclick="closeRanking()">
 
 </div>
 
+
 <script>
 
-let score=0;
-let time=30;
-let running=true;
+/* =========================
+   GAME DATA
+========================= */
 
-let branches=[];
+let score = 0;
 
-const tree=
+let time = 30;
+
+let running = true;
+
+let branches = [];
+
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const tree =
 document.getElementById("tree");
 
-const player=
+const player =
 document.getElementById("player");
 
-const scoreText=
+const scoreText =
 document.getElementById("score");
 
-const timeText=
+const timeText =
 document.getElementById("time");
 
-const gameOver=
+const gameOver =
 document.getElementById("gameOver");
 
-const rankingPage=
+const rankingPage =
 document.getElementById("rankingPage");
 
-const rankingList=
+const rankingList =
 document.getElementById("rankingList");
 
 
-/* CREATE BRANCH */
+/* =========================
+   CREATE BRANCH
+========================= */
 
 function createBranch(side,bottom){
 
-let branch=
-document.createElement("div");
+    const branch =
+    document.createElement("div");
 
-branch.className=
-"branch "+side;
+    branch.className =
+    "branch " + side;
 
-branch.style.bottom=
-bottom+"px";
+    branch.style.bottom =
+    bottom + "px";
 
-tree.appendChild(branch);
+    tree.appendChild(branch);
 
-branches.push({
-element:branch,
-side:side
-});
+    branches.push({
+
+        element:branch,
+
+        side:side
+
+    });
 
 }
 
 
-/* CREATE TREE */
+/* =========================
+   INITIAL TREE
+========================= */
 
 function createTree(){
 
-document
-.querySelectorAll(".branch")
-.forEach(
-b=>b.remove()
-);
+    document
+    .querySelectorAll(".branch")
+    .forEach(
+        branch =>
+        branch.remove()
+    );
 
-branches=[];
+    branches = [];
 
-createBranch("left",100);
-createBranch("right",180);
-createBranch("left",260);
-createBranch("right",340);
+    createBranch(
+        "left",
+        110
+    );
+
+    createBranch(
+        "right",
+        195
+    );
+
+    createBranch(
+        "left",
+        280
+    );
+
+    createBranch(
+        "right",
+        365
+    );
 
 }
 
 
-/* CHOP */
+/* =========================
+   CHOP
+========================= */
 
 function chop(side){
 
-if(!running)
-return;
+    if(!running)
+    return;
 
-player.classList.remove(
-"leftHit",
-"rightHit"
-);
 
-void player.offsetWidth;
+    /* ANIMATION */
 
-if(side==="left"){
+    player.classList.remove(
+        "leftHit",
+        "rightHit"
+    );
 
-player.classList.add("leftHit");
+    void player.offsetWidth;
 
-}else{
 
-player.classList.add("rightHit");
+    if(side === "left"){
+
+        player.classList.add(
+            "leftHit"
+        );
+
+    }else{
+
+        player.classList.add(
+            "rightHit"
+        );
+
+    }
+
+
+    setTimeout(()=>{
+
+        player.classList.remove(
+            "leftHit",
+            "rightHit"
+        );
+
+    },180);
+
+
+    /* FIRST BRANCH */
+
+    const branch =
+    branches[0];
+
+
+    if(!branch)
+    return;
+
+
+    /* WRONG SIDE */
+
+    if(branch.side === side){
+
+        endGame();
+
+        return;
+
+    }
+
+
+    /* REMOVE BRANCH */
+
+    branch.element.remove();
+
+    branches.shift();
+
+
+    /* SCORE */
+
+    score++;
+
+    scoreText.innerText =
+    "🏆 " + score;
+
+
+    showHit();
+
+
+    /* ADD NEW BRANCH */
+
+    const newSide =
+    Math.random() < .5
+    ? "left"
+    : "right";
+
+
+    createBranch(
+        newSide,
+        450
+    );
 
 }
 
-setTimeout(()=>{
 
-player.classList.remove(
-"leftHit",
-"rightHit"
-);
-
-},180);
-
-
-/* CHECK BRANCH */
-
-let branch=
-branches[0];
-
-if(branch){
-
-if(branch.side===side){
-
-endGame();
-
-return;
-
-}
-
-branch.element.remove();
-
-branches.shift();
-
-}
-
-
-/* SCORE */
-
-score++;
-
-scoreText.innerText=
-"🏆 "+score;
-
-showHit();
-
-
-/* ADD NEW BRANCH */
-
-let newSide=
-Math.random()<.5
-?"left"
-:"right";
-
-createBranch(
-newSide,
-430
-);
-
-}
-
-
-/* HIT EFFECT */
+/* =========================
+   HIT EFFECT
+========================= */
 
 function showHit(){
 
-let hit=
-document.createElement("div");
+    const hit =
+    document.createElement("div");
 
-hit.className="hit";
+    hit.className =
+    "hit";
 
-hit.innerText="💥";
+    hit.innerText =
+    "💥";
 
-document
-.getElementById("game")
-.appendChild(hit);
 
-setTimeout(
-()=>{
-hit.remove();
-},
-400
-);
+    document
+    .getElementById("game")
+    .appendChild(hit);
+
+
+    setTimeout(()=>{
+
+        hit.remove();
+
+    },400);
 
 }
 
 
-/* TIMER */
+/* =========================
+   TIMER
+========================= */
 
 setInterval(()=>{
 
-if(!running)
-return;
+    if(!running)
+    return;
 
-time--;
 
-timeText.innerText=
-"⏱️ "+time;
+    time--;
 
-if(time<=0){
+    timeText.innerText =
+    "⏱️ " + time;
 
-endGame();
 
-}
+    if(time <= 0){
+
+        endGame();
+
+    }
 
 },1000);
 
 
-/* GAME OVER */
+/* =========================
+   GAME OVER
+========================= */
 
 function endGame(){
 
-if(!running)
-return;
+    if(!running)
+    return;
 
-running=false;
 
-document
-.getElementById("finalScore")
-.innerText=score;
+    running = false;
 
-let best=
-Number(
-localStorage.getItem(
-"bestScore"
-)||0
-);
 
-if(score>best){
+    document
+    .getElementById("finalScore")
+    .innerText =
+    score;
 
-best=score;
 
-localStorage.setItem(
-"bestScore",
-best
-);
+    let best =
+    Number(
+        localStorage.getItem(
+            "lumberjackBest"
+        ) || 0
+    );
+
+
+    if(score > best){
+
+        best = score;
+
+        localStorage.setItem(
+            "lumberjackBest",
+            best
+        );
+
+    }
+
+
+    document
+    .getElementById("bestScore")
+    .innerText =
+    best;
+
+
+    saveScore();
+
+
+    gameOver.style.display =
+    "flex";
 
 }
 
-document
-.getElementById("bestScore")
-.innerText=best;
 
-saveScore();
-
-gameOver.style.display=
-"flex";
-
-}
-
-
-/* RESTART */
+/* =========================
+   RESTART
+========================= */
 
 function restart(){
 
-score=0;
+    score = 0;
 
-time=30;
+    time = 30;
 
-running=true;
+    running = true;
 
-scoreText.innerText=
-"🏆 0";
 
-timeText.innerText=
-"⏱️ 30";
+    scoreText.innerText =
+    "🏆 0";
 
-gameOver.style.display=
-"none";
 
-createTree();
+    timeText.innerText =
+    "⏱️ 30";
+
+
+    gameOver.style.display =
+    "none";
+
+
+    createTree();
 
 }
 
 
-/* SAVE SCORE */
+/* =========================
+   SAVE SCORE
+========================= */
 
 function saveScore(){
 
-let scores=
-JSON.parse(
-localStorage.getItem(
-"lumberjackScores"
-)||"[]"
-);
+    let scores =
+    JSON.parse(
+        localStorage.getItem(
+            "lumberjackScores"
+        ) || "[]"
+    );
 
-scores.push({
 
-name:"Player",
-score:score
+    scores.push({
 
-});
+        name:
+        "Player",
 
-scores.sort(
-(a,b)=>
-b.score-a.score
-);
+        score:
+        score
 
-scores=
-scores.slice(0,50);
+    });
 
-localStorage.setItem(
-"lumberjackScores",
-JSON.stringify(scores)
-);
+
+    scores.sort(
+        (a,b) =>
+        b.score - a.score
+    );
+
+
+    scores =
+    scores.slice(
+        0,
+        50
+    );
+
+
+    localStorage.setItem(
+
+        "lumberjackScores",
+
+        JSON.stringify(
+            scores
+        )
+
+    );
 
 }
 
 
-/* OPEN RANKING */
+/* =========================
+   OPEN RANKING
+========================= */
 
 function openRanking(){
 
-gameOver.style.display=
-"none";
+    gameOver.style.display =
+    "none";
 
-rankingPage.style.display=
-"flex";
 
-let scores=
-JSON.parse(
-localStorage.getItem(
-"lumberjackScores"
-)||"[]"
-);
+    rankingPage.style.display =
+    "flex";
 
-rankingList.innerHTML="";
 
-if(scores.length===0){
+    let scores =
+    JSON.parse(
+        localStorage.getItem(
+            "lumberjackScores"
+        ) || "[]"
+    );
 
-rankingList.innerHTML=
-"<div class='rank'>No scores yet</div>";
 
-return;
+    rankingList.innerHTML =
+    "";
+
+
+    if(scores.length === 0){
+
+        rankingList.innerHTML =
+        "<div class='rank'>No scores yet</div>";
+
+        return;
+
+    }
+
+
+    scores.forEach(
+    (item,index)=>{
+
+        const row =
+        document.createElement(
+            "div"
+        );
+
+
+        row.className =
+        "rank";
+
+
+        let medal;
+
+
+        if(index === 0){
+
+            medal = "🥇";
+
+        }else if(index === 1){
+
+            medal = "🥈";
+
+        }else if(index === 2){
+
+            medal = "🥉";
+
+        }else{
+
+            medal = "🏅";
+
+        }
+
+
+        row.innerHTML =
+
+        "<span>" +
+
+        medal +
+
+        " #" +
+
+        (index + 1) +
+
+        " " +
+
+        item.name +
+
+        "</span>" +
+
+        "<strong>" +
+
+        item.score +
+
+        "</strong>";
+
+
+        rankingList.appendChild(
+            row
+        );
+
+    });
 
 }
 
-scores.forEach(
-(item,index)=>{
 
-let row=
-document.createElement("div");
-
-row.className="rank";
-
-let medal=
-index===0
-?"🥇"
-:
-index===1
-?"🥈"
-:
-index===2
-?"🥉"
-:
-"🏅";
-
-row.innerHTML=
-"<span>"+
-medal+
-" #"+
-(index+1)+
-" "+
-item.name+
-"</span>"+
-"<strong>"+
-item.score+
-"</strong>";
-
-rankingList.appendChild(row);
-
-});
-
-}
-
-
-/* CLOSE RANKING */
+/* =========================
+   CLOSE RANKING
+========================= */
 
 function closeRanking(){
 
-rankingPage.style.display=
-"none";
+    rankingPage.style.display =
+    "none";
 
 }
 
 
-/* KEYBOARD */
+/* =========================
+   KEYBOARD
+========================= */
 
 document.addEventListener(
 "keydown",
-function(e){
+function(event){
 
-if(e.key==="ArrowLeft"){
+    if(event.key === "ArrowLeft"){
 
-chop("left");
+        chop("left");
 
-}
-
-if(e.key==="ArrowRight"){
-
-chop("right");
-
-}
-
-}
-);
+    }
 
 
-/* START GAME */
+    if(event.key === "ArrowRight"){
+
+        chop("right");
+
+    }
+
+});
+
+
+/* =========================
+   START
+========================= */
 
 createTree();
 
