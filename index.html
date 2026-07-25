@@ -1,1542 +1,250 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-
-<title>LumberJack</title>
-
-<style>
-
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-    user-select:none;
-    -webkit-user-select:none;
-    -webkit-tap-highlight-color:transparent;
-}
-
-html,
-body{
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    font-family:Arial,sans-serif;
-}
-
-body{
-    background:#79d0f5;
-}
-
-#game{
-    position:relative;
-    width:100%;
-    max-width:520px;
-    height:100vh;
-    height:100dvh;
-    margin:auto;
-    overflow:hidden;
-
-    background:
-    linear-gradient(
-        to bottom,
-        #72cef4 0%,
-        #c8efff 52%,
-        #79bd56 52%,
-        #4d9639 100%
-    );
-}
-
-/* =========================
-   SKY
-========================= */
-
-.sun{
-    position:absolute;
-    width:65px;
-    height:65px;
-    right:25px;
-    top:70px;
-    border-radius:50%;
-    background:#ffe66d;
-    box-shadow:0 0 30px rgba(255,230,109,.8);
-}
-
-.cloud{
-    position:absolute;
-    width:110px;
-    height:30px;
-    border-radius:30px;
-    background:white;
-    opacity:.85;
-}
-
-.cloud:before,
-.cloud:after{
-    content:"";
-    position:absolute;
-    border-radius:50%;
-    background:white;
-}
-
-.cloud:before{
-    width:48px;
-    height:48px;
-    left:12px;
-    top:-22px;
-}
-
-.cloud:after{
-    width:58px;
-    height:58px;
-    right:8px;
-    top:-28px;
-}
-
-.cloud1{
-    left:5%;
-    top:105px;
-}
-
-.cloud2{
-    right:5%;
-    top:190px;
-    transform:scale(.7);
-}
-
-/* =========================
-   HEADER
-========================= */
-
-#header{
-    position:absolute;
-    top:10px;
-    left:0;
-    width:100%;
-    text-align:center;
-    z-index:100;
-}
-
-.title{
-    color:white;
-    font-size:30px;
-    font-weight:900;
-    letter-spacing:1px;
-    text-shadow:
-        3px 3px 0 #5a321a,
-        0 4px 8px rgba(0,0,0,.3);
-}
-
-.stats{
-    display:flex;
-    justify-content:center;
-    gap:8px;
-    margin-top:8px;
-}
-
-.stat{
-    min-width:95px;
-    padding:7px 15px;
-    border-radius:20px;
-    color:white;
-    background:rgba(0,0,0,.45);
-    font-size:18px;
-    font-weight:bold;
-}
-
-#time{
-    background:#e74c3c;
-}
-
-#rankButton{
-    position:absolute;
-    top:12px;
-    right:10px;
-    z-index:150;
-
-    padding:9px 12px;
-    border:0;
-    border-radius:15px;
-
-    background:white;
-    color:#333;
-    font-size:14px;
-    font-weight:bold;
-
-    box-shadow:0 3px 8px rgba(0,0,0,.2);
-}
-
-/* =========================
-   TREE
-========================= */
-
-#tree{
-    position:absolute;
-    left:50%;
-    bottom:95px;
-
-    width:220px;
-    height:530px;
-
-    transform:translateX(-50%);
-}
-
-/* MAIN TRUNK */
-
-#trunk{
-    position:absolute;
-
-    left:85px;
-    bottom:0;
-
-    width:50px;
-    height:100%;
-
-    border-radius:12px 12px 5px 5px;
-
-    background:
-    linear-gradient(
-        90deg,
-        #542b0c 0%,
-        #8b4d1c 25%,
-        #b86c2c 48%,
-        #7a3f14 70%,
-        #4d270b 100%
-    );
-
-    box-shadow:
-        4px 0 10px rgba(0,0,0,.25);
-}
-
-/* TREE LINES */
-
-#trunk:before{
-    content:"";
-
-    position:absolute;
-
-    left:12px;
-    top:20px;
-
-    width:4px;
-    height:90%;
-
-    border-radius:5px;
-
-    background:rgba(70,30,5,.35);
-
-    box-shadow:
-        12px 50px rgba(70,30,5,.25),
-        0 120px rgba(70,30,5,.25),
-        15px 190px rgba(70,30,5,.25),
-        2px 280px rgba(70,30,5,.25),
-        15px 360px rgba(70,30,5,.25);
-}
-
-/* =========================
-   REAL BRANCH
-========================= */
-
-.branch{
-    position:absolute;
-
-    width:105px;
-    height:22px;
-
-    z-index:20;
-
-    background:
-    linear-gradient(
-        to bottom,
-        #9b5720,
-        #6a350e
-    );
-
-    border-radius:10px;
-
-    box-shadow:
-        2px 3px 5px rgba(0,0,0,.25);
-
-    transition:
-        bottom .12s linear;
-}
-
-/* LEFT BRANCH */
-
-.branch.left{
-    left:-62px;
-    transform:rotate(-8deg);
-    transform-origin:right center;
-}
-
-/* RIGHT BRANCH */
-
-.branch.right{
-    right:-62px;
-    transform:rotate(8deg);
-    transform-origin:left center;
-}
-
-/* SMALL TWIG */
-
-.branch:before{
-    content:"";
-
-    position:absolute;
-
-    width:55px;
-    height:13px;
-
-    top:-18px;
-
-    border-radius:10px;
-
-    background:
-    linear-gradient(
-        #9b5720,
-        #68330e
-    );
-}
-
-/* TWIG POSITION */
-
-.branch.left:before{
-    left:35px;
-    transform:rotate(-35deg);
-}
-
-.branch.right:before{
-    right:35px;
-    transform:rotate(35deg);
-}
-
-/* LEAVES */
-
-.branch:after{
-    content:"🍃";
-
-    position:absolute;
-
-    font-size:38px;
-
-    line-height:1;
-}
-
-/* LEFT LEAVES */
-
-.branch.left:after{
-    left:5px;
-    top:-38px;
-
-    transform:
-        rotate(-25deg);
-}
-
-/* RIGHT LEAVES */
-
-.branch.right:after{
-    right:5px;
-    top:-38px;
-
-    transform:
-        scaleX(-1)
-        rotate(-25deg);
-}
-
-/* =========================
-   PLAYER
-========================= */
-
-#player{
-    position:absolute;
-
-    left:50%;
-    bottom:45px;
-
-    width:145px;
-    height:185px;
-
-    transform:translateX(-50%);
-
-    z-index:70;
-
-    transition:
-        transform .12s ease;
-}
-
-/* HAT */
-
-.hat{
-    position:absolute;
-
-    top:2px;
-    left:32px;
-
-    width:72px;
-    height:26px;
-
-    border-radius:50%;
-
-    background:
-    linear-gradient(
-        #e7473d,
-        #b72c29
-    );
-
-    z-index:15;
-}
-
-.hat:after{
-    content:"";
-
-    position:absolute;
-
-    left:-9px;
-    bottom:-5px;
-
-    width:90px;
-    height:9px;
-
-    border-radius:10px;
-
-    background:#a92525;
-}
-
-/* HAIR */
-
-.hair{
-    position:absolute;
-
-    top:17px;
-    left:42px;
-
-    width:55px;
-    height:25px;
-
-    border-radius:
-        50%
-        50%
-        20%
-        20%;
-
-    background:#422716;
-
-    z-index:10;
-}
-
-/* HEAD */
-
-.head{
-    position:absolute;
-
-    top:26px;
-    left:47px;
-
-    width:50px;
-    height:50px;
-
-    border-radius:50%;
-
-    background:#f2b37d;
-
-    border:3px solid #985a33;
-
-    z-index:8;
-}
-
-/* EYES */
-
-.head:before{
-    content:"";
-
-    position:absolute;
-
-    top:19px;
-    left:11px;
-
-    width:5px;
-    height:5px;
-
-    border-radius:50%;
-
-    background:#222;
-
-    box-shadow:
-        19px 0 #222;
-}
-
-/* MOUTH */
-
-.head:after{
-    content:"";
-
-    position:absolute;
-
-    left:16px;
-    bottom:7px;
-
-    width:16px;
-    height:6px;
-
-    border-bottom:
-        2px solid #63351e;
-
-    border-radius:50%;
-}
-
-/* BODY */
-
-.body{
-    position:absolute;
-
-    top:72px;
-    left:38px;
-
-    width:65px;
-    height:75px;
-
-    border-radius:
-        18px
-        18px
-        10px
-        10px;
-
-    background:
-    linear-gradient(
-        #e94c3e,
-        #a82f29
-    );
-
-    z-index:6;
-}
-
-/* ARMS */
-
-.arm{
-    position:absolute;
-
-    top:75px;
-
-    width:20px;
-    height:64px;
-
-    border-radius:12px;
-
-    background:#f2b37d;
-
-    z-index:5;
-
-    transform-origin:top center;
-}
-
-.arm.left{
-    left:23px;
-    transform:rotate(24deg);
-}
-
-.arm.right{
-    right:21px;
-    transform:rotate(-28deg);
-}
-
-/* LEGS */
-
-.leg{
-    position:absolute;
-
-    top:140px;
-
-    width:24px;
-    height:45px;
-
-    border-radius:8px;
-
-    background:#34495e;
-
-    z-index:4;
-}
-
-.leg.left{
-    left:40px;
-}
-
-.leg.right{
-    right:31px;
-}
-
-/* AXE */
-
-.axe{
-    position:absolute;
-
-    top:55px;
-    right:-35px;
-
-    font-size:58px;
-
-    z-index:30;
-
-    transform:
-        rotate(-35deg);
-
-    transition:
-        transform .12s ease;
-}
-
-/* CHOP LEFT */
-
-#player.leftHit{
-    transform:
-        translateX(-50%)
-        rotate(-8deg);
-}
-
-#player.leftHit .axe{
-    transform:
-        rotate(-115deg)
-        translate(-10px,15px);
-}
-
-/* CHOP RIGHT */
-
-#player.rightHit{
-    transform:
-        translateX(-50%)
-        rotate(8deg);
-}
-
-#player.rightHit .axe{
-    transform:
-        rotate(-65deg)
-        translate(10px,15px);
-}
-
-/* =========================
-   BUTTONS
-========================= */
-
-#buttons{
-    position:absolute;
-
-    left:0;
-    bottom:14px;
-
-    width:100%;
-
-    display:flex;
-    justify-content:center;
-
-    gap:18px;
-
-    z-index:100;
-}
-
-.control{
-    width:140px;
-    height:65px;
-
-    border:0;
-    border-radius:20px;
-
-    color:white;
-
-    font-size:30px;
-    font-weight:bold;
-
-    background:
-    linear-gradient(
-        #3498db,
-        #236da5
-    );
-
-    box-shadow:
-        0 6px 0 #154d73,
-        0 8px 15px rgba(0,0,0,.25);
-}
-
-.control:active{
-    transform:translateY(5px);
-
-    box-shadow:
-        0 1px 0 #154d73;
-}
-
-/* =========================
-   HIT EFFECT
-========================= */
-
-.hit{
-    position:absolute;
-
-    left:50%;
-    bottom:315px;
-
-    z-index:300;
-
-    font-size:45px;
-
-    pointer-events:none;
-
-    animation:
-        hitAnimation .4s ease-out forwards;
-}
-
-@keyframes hitAnimation{
-
-    0%{
-        opacity:1;
-
-        transform:
-            translateX(-50%)
-            scale(.5);
-    }
-
-    100%{
-        opacity:0;
-
-        transform:
-            translateX(-50%)
-            translateY(-60px)
-            scale(1.5);
-    }
-
-}
-
-/* =========================
-   GAME OVER
-========================= */
-
-#gameOver{
-    position:absolute;
-
-    inset:0;
-
-    display:none;
-
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-
-    z-index:500;
-
-    background:
-        rgba(0,0,0,.86);
-
-    color:white;
-}
-
-#gameOver h1{
-    margin-bottom:15px;
-
-    color:#ffe066;
-
-    font-size:45px;
-
-    text-shadow:
-        3px 3px #000;
-}
-
-.result{
-    margin:5px;
-
-    font-size:24px;
-}
-
-.restart{
-    width:210px;
-    height:60px;
-
-    margin-top:20px;
-
-    border:0;
-    border-radius:18px;
-
-    color:white;
-
-    background:#2ecc71;
-
-    font-size:20px;
-    font-weight:bold;
-
-    box-shadow:
-        0 5px 0 #1e8449;
-}
-
-/* =========================
-   RANKING
-========================= */
-
-#rankingPage{
-    position:absolute;
-
-    inset:0;
-
-    display:none;
-
-    flex-direction:column;
-    align-items:center;
-
-    z-index:600;
-
-    padding:30px 20px;
-
-    color:white;
-
-    background:
-        rgba(10,20,30,.97);
-}
-
-#rankingPage h2{
-    color:#ffe066;
-
-    font-size:30px;
-
-    margin-bottom:15px;
-}
-
-#rankingList{
-    width:100%;
-    max-width:400px;
-
-    max-height:60vh;
-
-    overflow-y:auto;
-}
-
-.rank{
-    display:flex;
-
-    justify-content:space-between;
-    align-items:center;
-
-    padding:13px 15px;
-
-    margin:7px 0;
-
-    border-radius:12px;
-
-    background:
-        rgba(255,255,255,.1);
-
-    font-size:18px;
-}
-
-.rank:first-child{
-    background:
-        rgba(255,215,0,.25);
-}
-
-.rank:nth-child(2){
-    background:
-        rgba(192,192,192,.2);
-}
-
-.rank:nth-child(3){
-    background:
-        rgba(205,127,50,.25);
-}
-
-.back{
-    width:180px;
-    height:50px;
-
-    margin-top:18px;
-
-    border:0;
-    border-radius:15px;
-
-    font-size:18px;
-    font-weight:bold;
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LumberJack Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #70c5ce;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        #game-container {
+            position: relative;
+            width: 360px;
+            height: 560px;
+            background: #87ceeb;
+            overflow: hidden;
+            border-bottom: 50px solid #55a020;
+        }
+        .cloud {
+            position: absolute;
+            background: #fff;
+            border-radius: 50px;
+        }
+        #score, #timer {
+            position: absolute;
+            top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px #000;
+        }
+        #score { left: 30px; }
+        #timer { right: 30px; }
+        
+        /* ဇာတ်ကောင်နဲ့ ပစ္စည်းများအတွက် Canvas */
+        canvas {
+            display: block;
+        }
+        
+        .btn-container {
+            display: flex;
+            width: 360px;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .control-btn {
+            width: 170px;
+            height: 70px;
+            background: #3b82f6;
+            border: none;
+            border-radius: 12px;
+            font-size: 28px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px #1d4ed8;
+        }
+        .control-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 #1d4ed8;
+        }
+    </style>
 </head>
-
 <body>
 
-<div id="game">
+    <div id="game-container">
+        <div id="score">Score: <span id="score-val">0</span></div>
+        <div id="timer">Time: <span id="timer-val">30</span></div>
+        <canvas id="gameCanvas" width="360" height="510"></canvas>
+    </div>
 
-<div class="sun"></div>
-
-<div class="cloud cloud1"></div>
-<div class="cloud cloud2"></div>
-
-<!-- HEADER -->
-
-<div id="header">
-
-<div class="title">
-🪓 LUMBERJACK
-</div>
-
-<div class="stats">
-
-<div class="stat" id="score">
-🏆 0
-</div>
-
-<div class="stat" id="time">
-⏱️ 30
-</div>
-
-</div>
-
-</div>
-
-<button id="rankButton"
-onclick="openRanking()">
-🏆 Ranking
-</button>
-
-
-<!-- TREE -->
-
-<div id="tree">
-
-<div id="trunk"></div>
-
-</div>
-
-
-<!-- PLAYER -->
-
-<div id="player">
-
-<div class="hat"></div>
-
-<div class="hair"></div>
-
-<div class="head"></div>
-
-<div class="body"></div>
-
-<div class="arm left"></div>
-
-<div class="arm right"></div>
-
-<div class="leg left"></div>
-
-<div class="leg right"></div>
-
-<div class="axe">
-🪓
-</div>
-
-</div>
-
-
-<!-- CONTROLS -->
-
-<div id="buttons">
-
-<button class="control"
-onclick="chop('left')">
-⬅️
-</button>
-
-<button class="control"
-onclick="chop('right')">
-➡️
-</button>
-
-</div>
-
-
-<!-- GAME OVER -->
-
-<div id="gameOver">
-
-<h1>
-GAME OVER
-</h1>
-
-<div class="result">
-🏆 Score:
-<span id="finalScore">0</span>
-</div>
-
-<div class="result">
-⭐ Best:
-<span id="bestScore">0</span>
-</div>
-
-<button class="restart"
-onclick="restart()">
-🔄 PLAY AGAIN
-</button>
-
-<button class="back"
-onclick="openRanking()">
-🏆 LEADERBOARD
-</button>
-
-</div>
-
-
-<!-- RANKING -->
-
-<div id="rankingPage">
-
-<h2>
-🏆 LEADERBOARD
-</h2>
-
-<div id="rankingList"></div>
-
-<button class="back"
-onclick="closeRanking()">
-⬅️ BACK
-</button>
-
-</div>
-
+    <div class="btn-container">
+        <button class="control-btn" onclick="chop('left')">⬅️</button>
+        <button class="control-btn" onclick="chop('right')">➡️</button>
+    </div>
 
 <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
 
-/* =========================
-   GAME DATA
-========================= */
+    let score = 0;
+    let timeLeft = 30;
+    let gameInterval;
+    let isPlaying = true;
 
-let score = 0;
+    // သစ်ပင်နဲ့ သစ်ကိုင်းများ
+    let treeTrunks = []; // အောက်ကနေ အပေါ်ကို တက်မယ့် သစ်ပိုင်းများ
+    // 0 = အလွတ်, 1 = ဘယ်ဘက်ကိုင်း, 2 = ညာဘက်ကိုင်း
+    let branches = [0, 0, 1, 0, 2, 0, 1, 0, 0, 2]; 
 
-let time = 30;
+    let playerSide = 'left'; // 'left' သို့မဟုတ် 'right'
 
-let running = true;
+    function initGame() {
+        score = 0;
+        timeLeft = 30;
+        isPlaying = true;
+        document.getElementById('score-val').innerText = score;
+        document.getElementById('timer-val').innerText = timeLeft;
+        
+        // အချိန်ဆင်းရန်
+        gameInterval = setInterval(() => {
+            if(timeLeft > 0 && isPlaying) {
+                timeLeft--;
+                document.getElementById('timer-val').innerText = timeLeft;
+            } else if(timeLeft <= 0) {
+                isPlaying = false;
+                alert("Game Over! Score: " + score);
+            }
+        }, 1000);
 
-let branches = [];
-
-
-/* =========================
-   ELEMENTS
-========================= */
-
-const tree =
-document.getElementById("tree");
-
-const player =
-document.getElementById("player");
-
-const scoreText =
-document.getElementById("score");
-
-const timeText =
-document.getElementById("time");
-
-const gameOver =
-document.getElementById("gameOver");
-
-const rankingPage =
-document.getElementById("rankingPage");
-
-const rankingList =
-document.getElementById("rankingList");
-
-
-/* =========================
-   CREATE BRANCH
-========================= */
-
-function createBranch(side,bottom){
-
-    const branch =
-    document.createElement("div");
-
-    branch.className =
-    "branch " + side;
-
-    branch.style.bottom =
-    bottom + "px";
-
-    tree.appendChild(branch);
-
-    branches.push({
-
-        element:branch,
-
-        side:side
-
-    });
-
-}
-
-
-/* =========================
-   INITIAL TREE
-========================= */
-
-function createTree(){
-
-    document
-    .querySelectorAll(".branch")
-    .forEach(
-        branch =>
-        branch.remove()
-    );
-
-    branches = [];
-
-    createBranch(
-        "left",
-        110
-    );
-
-    createBranch(
-        "right",
-        195
-    );
-
-    createBranch(
-        "left",
-        280
-    );
-
-    createBranch(
-        "right",
-        365
-    );
-
-}
-
-
-/* =========================
-   CHOP
-========================= */
-
-function chop(side){
-
-    if(!running)
-    return;
-
-
-    /* ANIMATION */
-
-    player.classList.remove(
-        "leftHit",
-        "rightHit"
-    );
-
-    void player.offsetWidth;
-
-
-    if(side === "left"){
-
-        player.classList.add(
-            "leftHit"
-        );
-
-    }else{
-
-        player.classList.add(
-            "rightHit"
-        );
-
+        draw();
     }
 
-
-    setTimeout(()=>{
-
-        player.classList.remove(
-            "leftHit",
-            "rightHit"
-        );
-
-    },180);
-
-
-    /* FIRST BRANCH */
-
-    const branch =
-    branches[0];
-
-
-    if(!branch)
-    return;
-
-
-    /* WRONG SIDE */
-
-    if(branch.side === side){
-
-        endGame();
-
-        return;
-
-    }
-
-
-    /* REMOVE BRANCH */
-
-    branch.element.remove();
-
-    branches.shift();
-
-
-    /* SCORE */
-
-    score++;
-
-    scoreText.innerText =
-    "🏆 " + score;
-
-
-    showHit();
-
-
-    /* ADD NEW BRANCH */
-
-    const newSide =
-    Math.random() < .5
-    ? "left"
-    : "right";
-
-
-    createBranch(
-        newSide,
-        450
-    );
-
-}
-
-
-/* =========================
-   HIT EFFECT
-========================= */
-
-function showHit(){
-
-    const hit =
-    document.createElement("div");
-
-    hit.className =
-    "hit";
-
-    hit.innerText =
-    "💥";
-
-
-    document
-    .getElementById("game")
-    .appendChild(hit);
-
-
-    setTimeout(()=>{
-
-        hit.remove();
-
-    },400);
-
-}
-
-
-/* =========================
-   TIMER
-========================= */
-
-setInterval(()=>{
-
-    if(!running)
-    return;
-
-
-    time--;
-
-    timeText.innerText =
-    "⏱️ " + time;
-
-
-    if(time <= 0){
-
-        endGame();
-
-    }
-
-},1000);
-
-
-/* =========================
-   GAME OVER
-========================= */
-
-function endGame(){
-
-    if(!running)
-    return;
-
-
-    running = false;
-
-
-    document
-    .getElementById("finalScore")
-    .innerText =
-    score;
-
-
-    let best =
-    Number(
-        localStorage.getItem(
-            "lumberjackBest"
-        ) || 0
-    );
-
-
-    if(score > best){
-
-        best = score;
-
-        localStorage.setItem(
-            "lumberjackBest",
-            best
-        );
-
-    }
-
-
-    document
-    .getElementById("bestScore")
-    .innerText =
-    best;
-
-
-    saveScore();
-
-
-    gameOver.style.display =
-    "flex";
-
-}
-
-
-/* =========================
-   RESTART
-========================= */
-
-function restart(){
-
-    score = 0;
-
-    time = 30;
-
-    running = true;
-
-
-    scoreText.innerText =
-    "🏆 0";
-
-
-    timeText.innerText =
-    "⏱️ 30";
-
-
-    gameOver.style.display =
-    "none";
-
-
-    createTree();
-
-}
-
-
-/* =========================
-   SAVE SCORE
-========================= */
-
-function saveScore(){
-
-    let scores =
-    JSON.parse(
-        localStorage.getItem(
-            "lumberjackScores"
-        ) || "[]"
-    );
-
-
-    scores.push({
-
-        name:
-        "Player",
-
-        score:
-        score
-
-    });
-
-
-    scores.sort(
-        (a,b) =>
-        b.score - a.score
-    );
-
-
-    scores =
-    scores.slice(
-        0,
-        50
-    );
-
-
-    localStorage.setItem(
-
-        "lumberjackScores",
-
-        JSON.stringify(
-            scores
-        )
-
-    );
-
-}
-
-
-/* =========================
-   OPEN RANKING
-========================= */
-
-function openRanking(){
-
-    gameOver.style.display =
-    "none";
-
-
-    rankingPage.style.display =
-    "flex";
-
-
-    let scores =
-    JSON.parse(
-        localStorage.getItem(
-            "lumberjackScores"
-        ) || "[]"
-    );
-
-
-    rankingList.innerHTML =
-    "";
-
-
-    if(scores.length === 0){
-
-        rankingList.innerHTML =
-        "<div class='rank'>No scores yet</div>";
-
-        return;
-
-    }
-
-
-    scores.forEach(
-    (item,index)=>{
-
-        const row =
-        document.createElement(
-            "div"
-        );
-
-
-        row.className =
-        "rank";
-
-
-        let medal;
-
-
-        if(index === 0){
-
-            medal = "🥇";
-
-        }else if(index === 1){
-
-            medal = "🥈";
-
-        }else if(index === 2){
-
-            medal = "🥉";
-
-        }else{
-
-            medal = "🏅";
-
+    function chop(side) {
+        if (!isPlaying) return;
+        
+        playerSide = side;
+
+        // သစ်ကိုင်းနဲ့ တိုက်မိခြင်း စစ်ဆေးရန် (အောက်ဆုံး သစ်ကိုင်းကို စစ်သည်)
+        let currentBranch = branches[0];
+        if ((side === 'left' && currentBranch === 1) || (side === 'right' && currentBranch === 2)) {
+            isPlaying = false;
+            alert("Game Over! Branch hit you. Score: " + score);
+            return;
         }
 
+        // ရမှတ်တိုးပြီး သစ်ကိုင်းများကို တစ်ကွက်စီ ရွှေ့ရန်
+        score++;
+        document.getElementById('score-val').innerText = score;
+        timeLeft += 1; // တစ်ချက်ခုတ်တိုင်း အချိန်အနည်းငယ် တိုးပေးသည်
 
-        row.innerHTML =
+        branches.shift(); // အောက်ဆုံးက သစ်ကိုင်းထွက်သွား
+        // အသစ်တစ်ခု ကျပန်းထည့်သည် (0: အလွတ်, 1: ဘယ်သစ်ကိုင်း, 2: ညာသစ်ကိုင်း)
+        let rand = Math.random();
+        let newB = rand < 0.4 ? 0 : (rand < 0.7 ? 1 : 2);
+        branches.push(newB);
 
-        "<span>" +
-
-        medal +
-
-        " #" +
-
-        (index + 1) +
-
-        " " +
-
-        item.name +
-
-        "</span>" +
-
-        "<strong>" +
-
-        item.score +
-
-        "</strong>";
-
-
-        rankingList.appendChild(
-            row
-        );
-
-    });
-
-}
-
-
-/* =========================
-   CLOSE RANKING
-========================= */
-
-function closeRanking(){
-
-    rankingPage.style.display =
-    "none";
-
-}
-
-
-/* =========================
-   KEYBOARD
-========================= */
-
-document.addEventListener(
-"keydown",
-function(event){
-
-    if(event.key === "ArrowLeft"){
-
-        chop("left");
-
+        draw();
     }
 
+    function draw() {
+        // ကောင်းကင် နောက်ခံ
+        ctx.fillStyle = "#87ceeb";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    if(event.key === "ArrowRight"){
+        // တိမ်တိုက်များ
+        ctx.fillStyle = "white";
+        ctx.beginPath();
+        ctx.arc(60, 80, 25, 0, Math.PI * 2);
+        ctx.arc(85, 75, 30, 0, Math.PI * 2);
+        ctx.arc(110, 80, 25, 0, Math.PI * 2);
+        ctx.fill();
 
-        chop("right");
+        // 🟢 သစ်ပင် ပင်စည် (အလယ်တည့်တည့်)
+        let treeX = 140;
+        let treeWidth = 80;
+        ctx.fillStyle = "#8B5A2B";
+        ctx.fillRect(treeX, 50, treeWidth, canvas.height - 50);
 
+        // သစ်ပင် အကြောအခြမ်းမျဉ်းများ
+        ctx.strokeStyle = "#5C4033";
+        ctx.lineWidth = 3;
+        for(let i = 100; i < canvas.height; i += 50) {
+            ctx.beginPath();
+            ctx.moveTo(treeX, i);
+            ctx.lineTo(treeX + treeWidth, i);
+            ctx.stroke();
+        }
+
+        // 🌿 သစ်ကိုင်းများ (Branches) ဆွဲရန်
+        for (let i = 0; i < branches.length; i++) {
+            let bType = branches[i];
+            let yPos = 420 - (i * 45); // အောက်ကနေ အပေါ်ကို စီပေးသည်
+
+            if (bType === 1) {
+                // ဘယ်ဘက် သစ်ကိုင်း
+                ctx.fillStyle = "#2e8b57";
+                ctx.beginPath();
+                ctx.roundRect(treeX - 90, yPos, 90, 25, 10);
+                ctx.fill();
+            } else if (bType === 2) {
+                // ညာဘက် သစ်ကိုင်း
+                ctx.fillStyle = "#2e8b57";
+                ctx.beginPath();
+                ctx.roundRect(treeX + treeWidth, yPos, 90, 25, 10);
+                ctx.fill();
+            }
+        }
+
+        // 🧍‍♂️ ဇာတ်ကောင် (Lumberjack) ဆွဲရန်
+        let charX = (playerSide === 'left') ? 50 : 230;
+        let charY = 380;
+
+        // ခန္ဓာကိုယ် (အနီရောင် ရှပ်အင်္ကျီ)
+        ctx.fillStyle = "#dc2626";
+        ctx.fillRect(charX, charY, 50, 60);
+
+        // ခေါင်း (အသားရောင်)
+        ctx.fillStyle = "#fcd34d";
+        ctx.beginPath();
+        ctx.arc(charX + 25, charY - 15, 20, 0, Math.PI * 2);
+        ctx.fill();
+
+        // ဦးထုပ် (အနီရောင် ဦးထုပ်အပြား)
+        ctx.fillStyle = "#b91c1c";
+        ctx.fillRect(charX + 2, charY - 32, 46, 10);
+
+        // မျက်နှာ (မျက်လုံးနဲ့ အပြုံး)
+        ctx.fillStyle = "#000";
+        ctx.fillRect(charX + 15, charY - 20, 4, 4);
+        ctx.fillRect(charX + 31, charY - 20, 4, 4);
+        ctx.beginPath();
+        ctx.arc(charX + 25, charY - 12, 8, 0, Math.PI, false);
+        ctx.stroke();
+
+        // 🪓 ပုဆိန်
+        ctx.fillStyle = "#9ca3af";
+        if (playerSide === 'left') {
+            ctx.fillRect(charX + 50, charY + 20, 30, 6); // လက်တံ/ကိုင်ထားပုံ
+            ctx.fillStyle = "#ef4444";
+            ctx.beginPath();
+            ctx.moveTo(charX + 80, charY + 15);
+            ctx.lineTo(charX + 95, charY + 23);
+            ctx.lineTo(charX + 80, charY + 31);
+            ctx.fill();
+        } else {
+            ctx.fillRect(charX - 30, charY + 20, 30, 6);
+            ctx.fillStyle = "#ef4444";
+            ctx.beginPath();
+            ctx.moveTo(charX - 30, charY + 15);
+            ctx.lineTo(charX - 45, charY + 23);
+            ctx.lineTo(charX - 30, charY + 31);
+            ctx.fill();
+        }
     }
 
-});
-
-
-/* =========================
-   START
-========================= */
-
-createTree();
-
+    // စတင်ချိန်မှာ ဂိမ်းကို စ run မည်
+    initGame();
 </script>
-
-</div>
 
 </body>
 </html>
