@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
-<title>LumberJack Game</title>
+<title>LumberJack</title>
 
 <style>
 *{
@@ -22,32 +22,33 @@ html,body{
 }
 
 body{
-    background:#79cfff;
+    background:#78cfff;
 }
 
 #game{
     position:relative;
     width:100%;
-    max-width:520px;
+    max-width:500px;
     height:100vh;
     height:100dvh;
     margin:auto;
     overflow:hidden;
     background:
     linear-gradient(
-        #73cfff 0%,
-        #c9f0ff 48%,
-        #72bd58 48%,
-        #438e38 100%
+        to bottom,
+        #70cfff 0%,
+        #c9efff 50%,
+        #76bd55 50%,
+        #4b963b 100%
     );
 }
 
-/* Sky */
+/* SKY */
 
 .sun{
     position:absolute;
-    top:75px;
-    right:35px;
+    top:65px;
+    right:25px;
     width:65px;
     height:65px;
     border-radius:50%;
@@ -57,230 +58,265 @@ body{
 
 .cloud{
     position:absolute;
-    width:95px;
+    width:100px;
     height:28px;
-    background:white;
     border-radius:30px;
-    opacity:.75;
+    background:white;
+    opacity:.8;
 }
 
 .cloud:before,
 .cloud:after{
     content:"";
     position:absolute;
-    background:white;
     border-radius:50%;
+    background:white;
 }
 
 .cloud:before{
-    width:42px;
-    height:42px;
+    width:45px;
+    height:45px;
     left:15px;
-    top:-18px;
+    top:-20px;
 }
 
 .cloud:after{
-    width:52px;
-    height:52px;
+    width:55px;
+    height:55px;
     right:10px;
-    top:-25px;
+    top:-28px;
 }
 
-.cloud1{
+.cloud.one{
     top:100px;
     left:5%;
 }
 
-.cloud2{
-    top:190px;
-    right:8%;
+.cloud.two{
+    top:185px;
+    right:5%;
     transform:scale(.7);
 }
 
-/* Header */
+/* TOP */
 
-#header{
+#top{
     position:absolute;
-    top:12px;
+    top:10px;
     left:0;
     width:100%;
     text-align:center;
-    z-index:30;
+    z-index:100;
 }
 
-.logo{
+.title{
     color:white;
     font-size:28px;
     font-weight:900;
+    letter-spacing:1px;
     text-shadow:
-    2px 2px 0 #5d351b,
-    0 3px 8px rgba(0,0,0,.4);
+    2px 3px 0 #583219,
+    0 4px 8px rgba(0,0,0,.3);
 }
 
 .stats{
     display:flex;
     justify-content:center;
     gap:8px;
-    margin-top:8px;
+    margin-top:7px;
 }
 
 .stat{
-    padding:7px 15px;
+    min-width:95px;
+    padding:7px 13px;
     border-radius:20px;
     color:white;
-    font-weight:bold;
-    font-size:18px;
     background:rgba(0,0,0,.45);
+    font-size:18px;
+    font-weight:bold;
 }
 
-#timer{
+#time{
     background:#e74c3c;
 }
 
-/* Forest */
-
-#forest{
+#rankBtn{
     position:absolute;
-    left:0;
-    bottom:0;
-    width:100%;
-    height:55%;
+    top:14px;
+    right:12px;
+    z-index:110;
+    border:0;
+    padding:9px 12px;
+    border-radius:15px;
+    background:white;
+    font-weight:bold;
 }
 
-/* Tree */
+/* TREE AREA */
 
-#tree{
+#treeArea{
     position:absolute;
     left:50%;
-    bottom:75px;
-    width:135px;
-    height:480px;
+    bottom:90px;
+    width:190px;
+    height:520px;
     transform:translateX(-50%);
 }
 
+/* TRUNK */
+
 #trunk{
     position:absolute;
-    left:47px;
+    left:75px;
     bottom:0;
-    width:42px;
+    width:40px;
     height:100%;
-    border-radius:12px 12px 5px 5px;
+    border-radius:10px;
     background:
     linear-gradient(
         90deg,
-        #60300f,
-        #a96129,
-        #743a15
+        #5b2e0d,
+        #a45e27,
+        #71360e
     );
-    box-shadow:
-    5px 0 12px rgba(0,0,0,.25);
+    box-shadow:4px 0 12px rgba(0,0,0,.25);
 }
 
 #trunk:after{
     content:"";
     position:absolute;
-    left:7px;
-    top:15px;
-    width:27px;
+    left:8px;
+    top:25px;
+    width:24px;
     height:5px;
     border-radius:50%;
-    background:rgba(55,25,5,.4);
+    background:rgba(60,25,5,.4);
     box-shadow:
-    0 55px rgba(55,25,5,.35),
-    0 120px rgba(55,25,5,.35),
-    0 190px rgba(55,25,5,.3),
-    0 270px rgba(55,25,5,.3),
-    0 350px rgba(55,25,5,.3);
+    0 60px rgba(60,25,5,.35),
+    0 125px rgba(60,25,5,.35),
+    0 200px rgba(60,25,5,.3),
+    0 280px rgba(60,25,5,.3),
+    0 360px rgba(60,25,5,.3);
 }
 
-/* Branches */
+/* BRANCH */
 
 .branch{
     position:absolute;
-    width:105px;
+    width:120px;
     height:30px;
     border-radius:20px;
     background:
     linear-gradient(
-        #45ad3b,
-        #176a28
+        #45b63d,
+        #176e28
     );
-    box-shadow:
-    0 4px 5px rgba(0,0,0,.25);
+    box-shadow:0 4px 6px rgba(0,0,0,.25);
+    z-index:10;
 }
 
 .branch:before,
 .branch:after{
     content:"";
     position:absolute;
-    width:42px;
-    height:42px;
+    width:48px;
+    height:48px;
     border-radius:50%;
-    background:#2f9635;
+    background:#2f9637;
 }
 
 .branch:before{
-    top:-20px;
-    left:15px;
+    left:12px;
+    top:-25px;
 }
 
 .branch:after{
-    top:-18px;
     right:8px;
+    top:-23px;
 }
 
 .branch.left{
-    left:-45px;
+    left:-50px;
 }
 
 .branch.right{
-    right:-45px;
+    right:-50px;
 }
 
-/* Lumberjack */
+/* LUMBERJACK */
 
 #player{
     position:absolute;
     left:50%;
-    bottom:65px;
-    width:120px;
-    height:140px;
+    bottom:48px;
+    width:135px;
+    height:175px;
     transform:translateX(-50%);
-    z-index:15;
+    z-index:50;
     transition:transform .12s ease;
 }
 
+/* HEAD */
+
 .head{
     position:absolute;
-    top:15px;
-    left:38px;
-    width:47px;
-    height:47px;
+    top:25px;
+    left:43px;
+    width:48px;
+    height:48px;
     border-radius:50%;
     background:#f2b37d;
-    z-index:3;
+    border:3px solid #9b5d35;
+    z-index:5;
 }
+
+.head:before{
+    content:"";
+    position:absolute;
+    top:19px;
+    left:12px;
+    width:5px;
+    height:5px;
+    border-radius:50%;
+    background:#222;
+    box-shadow:18px 0 #222;
+}
+
+.head:after{
+    content:"";
+    position:absolute;
+    left:16px;
+    bottom:8px;
+    width:15px;
+    height:5px;
+    border-bottom:2px solid #63351e;
+    border-radius:50%;
+}
+
+/* HAIR */
 
 .hair{
     position:absolute;
-    top:8px;
-    left:34px;
-    width:55px;
-    height:22px;
-    border-radius:50%;
-    background:#4a2a15;
-    z-index:4;
+    top:17px;
+    left:39px;
+    width:56px;
+    height:23px;
+    border-radius:50% 50% 20% 20%;
+    background:#442817;
+    z-index:7;
 }
+
+/* HAT */
 
 .hat{
     position:absolute;
-    top:2px;
-    left:28px;
-    width:67px;
-    height:20px;
+    top:4px;
+    left:30px;
+    width:70px;
+    height:25px;
     border-radius:50%;
-    background:#e53935;
-    z-index:6;
+    background:#d93636;
+    z-index:10;
 }
 
 .hat:after{
@@ -288,115 +324,109 @@ body{
     position:absolute;
     left:-8px;
     bottom:-5px;
-    width:82px;
+    width:86px;
     height:8px;
     border-radius:10px;
-    background:#b92d2a;
+    background:#a92525;
 }
+
+/* BODY */
 
 .body{
     position:absolute;
-    bottom:25px;
-    left:31px;
-    width:58px;
-    height:75px;
+    top:70px;
+    left:36px;
+    width:62px;
+    height:72px;
     border-radius:18px 18px 10px 10px;
     background:
     linear-gradient(
-        #e74c3c,
-        #b8322c
+        #e84a3c,
+        #a92f2a
     );
+    z-index:4;
 }
+
+/* ARMS */
 
 .arm{
     position:absolute;
-    top:70px;
-    width:18px;
-    height:55px;
+    top:74px;
+    width:19px;
+    height:62px;
     border-radius:12px;
     background:#f2b37d;
-    z-index:2;
+    z-index:3;
 }
 
 .arm.left{
-    left:25px;
-    transform:rotate(20deg);
+    left:22px;
+    transform:rotate(25deg);
 }
 
 .arm.right{
-    right:18px;
-    transform:rotate(-35deg);
+    right:20px;
+    transform:rotate(-30deg);
 }
+
+/* LEGS */
 
 .leg{
     position:absolute;
-    bottom:-5px;
-    width:21px;
+    top:135px;
+    width:23px;
     height:45px;
     border-radius:8px;
     background:#34495e;
 }
 
 .leg.left{
-    left:34px;
+    left:38px;
 }
 
 .leg.right{
-    right:10px;
+    right:29px;
 }
+
+/* AXE */
 
 .axe{
     position:absolute;
-    top:48px;
-    right:-25px;
-    font-size:58px;
+    top:50px;
+    right:-30px;
+    font-size:62px;
     transform:rotate(-35deg);
-    z-index:10;
-    transition:transform .12s ease;
+    z-index:20;
+    transition:transform .13s ease;
 }
 
-#player.chopping{
+/* CHOP */
+
+#player.chopLeft{
     transform:
     translateX(-50%)
-    scale(1.08);
+    rotate(-7deg);
 }
 
-#player.chopping .axe{
+#player.chopRight{
+    transform:
+    translateX(-50%)
+    rotate(7deg);
+}
+
+#player.chopLeft .axe{
     transform:
     rotate(-115deg)
-    translate(-12px,20px);
+    translate(-12px,18px);
 }
 
-/* Effects */
-
-.hit{
-    position:absolute;
-    left:50%;
-    bottom:280px;
-    transform:translateX(-50%);
-    z-index:80;
-    font-size:42px;
-    animation:
-    hitEffect .4s ease-out forwards;
+#player.chopRight .axe{
+    transform:
+    rotate(-65deg)
+    translate(8px,15px);
 }
 
-@keyframes hitEffect{
-    0%{
-        opacity:1;
-        transform:
-        translateX(-50%)
-        scale(.5);
-    }
-    100%{
-        opacity:0;
-        transform:
-        translateX(-50%)
-        translateY(-55px)
-        scale(1.6);
-    }
-}
-
-/* Buttons */
+/* BUTTONS */
 
 #buttons{
     position:absolute;
@@ -406,7 +436,7 @@ body{
     display:flex;
     justify-content:center;
     gap:18px;
-    z-index:50;
+    z-index:80;
 }
 
 .control{
@@ -415,7 +445,7 @@ body{
     border:0;
     border-radius:20px;
     color:white;
-    font-size:30px;
+    font-size:32px;
     font-weight:bold;
     background:
     linear-gradient(
@@ -432,46 +462,78 @@ body{
     box-shadow:0 1px 0 #154d73;
 }
 
-/* Game Over */
+/* HIT */
 
-#gameover{
+.hit{
+    position:absolute;
+    left:50%;
+    bottom:300px;
+    z-index:200;
+    font-size:45px;
+    pointer-events:none;
+    animation:
+    hitAnim .4s ease-out forwards;
+}
+
+@keyframes hitAnim{
+
+    0%{
+        opacity:1;
+        transform:
+        translateX(-50%)
+        scale(.5);
+    }
+
+    100%{
+        opacity:0;
+        transform:
+        translateX(-50%)
+        translateY(-60px)
+        scale(1.5);
+    }
+
+}
+
+/* GAME OVER */
+
+#gameOver{
     position:absolute;
     inset:0;
     display:none;
     flex-direction:column;
-    align-items:center;
     justify-content:center;
-    z-index:100;
+    align-items:center;
+    z-index:500;
     color:white;
-    background:rgba(0,0,0,.82);
+    background:rgba(0,0,0,.85);
 }
 
-#gameover h1{
+#gameOver h1{
     margin:0 0 12px;
     color:#ffe066;
-    font-size:46px;
+    font-size:45px;
     text-shadow:3px 3px #000;
 }
 
 .result{
-    font-size:24px;
     margin:5px;
+    font-size:24px;
 }
 
-#restart{
+.restart{
     margin-top:20px;
     width:210px;
     height:60px;
     border:0;
     border-radius:18px;
     color:white;
+    background:#2ecc71;
     font-size:20px;
     font-weight:bold;
-    background:#2ecc71;
     box-shadow:0 5px 0 #1e8449;
 }
 
-/* Leaderboard */
+/* LEADERBOARD */
 
 #leaderboard{
     position:absolute;
@@ -479,25 +541,22 @@ body{
     display:none;
     flex-direction:column;
     align-items:center;
-    z-index:110;
+    z-index:600;
     padding:30px 20px;
     color:white;
     background:
-    linear-gradient(
-        rgba(20,30,40,.96),
-        rgba(10,20,30,.98)
-    );
+    rgba(10,20,30,.97);
 }
 
 #leaderboard h2{
-    margin:10px 0 15px;
     color:#ffe066;
+    font-size:30px;
 }
 
 #ranking{
     width:100%;
     max-width:400px;
-    max-height:55vh;
+    max-height:60vh;
     overflow-y:auto;
 }
 
@@ -512,7 +571,7 @@ body{
     font-size:18px;
 }
 
-.rank:nth-child(1){
+.rank:first-child{
     background:rgba(255,215,0,.25);
 }
 
@@ -524,48 +583,14 @@ body{
     background:rgba(205,127,50,.25);
 }
 
-.closeBoard{
-    margin-top:15px;
+.back{
+    margin-top:18px;
     width:180px;
     height:50px;
     border:0;
     border-radius:15px;
     font-size:18px;
     font-weight:bold;
-}
-
-/* Leaderboard button */
-
-#boardBtn{
-    position:absolute;
-    top:15px;
-    right:15px;
-    z-index:60;
-    padding:9px 12px;
-    border:0;
-    border-radius:15px;
-    background:#fff;
-    font-weight:bold;
-}
-
-/* Mobile */
-
-@media(max-width:400px){
-
-    .logo{
-        font-size:24px;
-    }
-
-    .stat{
-        font-size:16px;
-        padding:6px 12px;
-    }
-
-    .control{
-        width:125px;
-        height:60px;
-    }
-
 }
 
 </style>
@@ -576,12 +601,14 @@ body{
 <div id="game">
 
 <div class="sun"></div>
-<div class="cloud cloud1"></div>
-<div class="cloud cloud2"></div>
+<div class="cloud one"></div>
+<div class="cloud two"></div>
 
-<div id="header">
+<!-- TOP -->
 
-<div class="logo">
+<div id="top">
+
+<div class="title">
 🪓 LUMBERJACK
 </div>
 
@@ -591,7 +618,7 @@ body{
 🏆 0
 </div>
 
-<div class="stat" id="timer">
+<div class="stat" id="time">
 ⏱️ 30
 </div>
 
@@ -599,17 +626,19 @@ body{
 
 </div>
 
-<button id="boardBtn" onclick="showLeaderboard()">
+<button id="rankBtn" onclick="openRanking()">
 🏆 Ranking
 </button>
 
-<div id="forest">
+<!-- TREE -->
 
-<div id="tree">
+<div id="treeArea">
 
 <div id="trunk"></div>
 
 </div>
+
+<!-- PLAYER -->
 
 <div id="player">
 
@@ -629,7 +658,7 @@ body{
 
 </div>
 
-</div>
+<!-- CONTROLS -->
 
 <div id="buttons">
 
@@ -645,7 +674,9 @@ onclick="chop('right')">
 
 </div>
 
-<div id="gameover">
+<!-- GAME OVER -->
+
+<div id="gameOver">
 
 <h1>GAME OVER</h1>
 
@@ -659,18 +690,19 @@ onclick="chop('right')">
 <span id="bestScore">0</span>
 </div>
 
-<button id="restart"
+<button class="restart"
 onclick="restart()">
 🔄 PLAY AGAIN
 </button>
 
-<button
-class="closeBoard"
-onclick="showLeaderboard()">
-🏆 VIEW RANKING
+<button class="back"
+onclick="openRanking()">
+🏆 LEADERBOARD
 </button>
 
 </div>
+
+<!-- LEADERBOARD -->
 
 <div id="leaderboard">
 
@@ -678,112 +710,172 @@ onclick="showLeaderboard()">
 
 <div id="ranking"></div>
 
-<button
-class="closeBoard"
-onclick="closeLeaderboard()">
+<button class="back"
+onclick="closeRanking()">
 ⬅️ BACK
 </button>
 
 </div>
 
-</div>
-
 <script>
 
-let score = 0;
-let time = 30;
-let running = true;
-let branches = [];
+/* GAME VARIABLES */
 
-let best =
-Number(
-localStorage.getItem("lumberjackBest")
-) || 0;
+let score=0;
+let time=30;
+let running=true;
 
-const tree =
-document.getElementById("tree");
+let branches=[];
 
-const player =
-document.getElementById("player");
+const tree=
+document.getElementById(
+"treeArea"
+);
 
-const scoreText =
-document.getElementById("score");
+const player=
+document.getElementById(
+"player"
+);
 
-const timerText =
-document.getElementById("timer");
+const scoreText=
+document.getElementById(
+"score"
+);
 
-const gameover =
-document.getElementById("gameover");
+const timeText=
+document.getElementById(
+"time"
+);
 
-const leaderboard =
-document.getElementById("leaderboard");
+const gameOver=
+document.getElementById(
+"gameOver"
+);
 
-const ranking =
-document.getElementById("ranking");
+const leaderboard=
+document.getElementById(
+"leaderboard"
+);
+
+const ranking=
+document.getElementById(
+"ranking"
+);
 
 
-/* Create branch */
+/* CREATE BRANCH */
 
-function createBranch(){
+function createBranch(
+side,
+bottom
+){
 
-const branch =
-document.createElement("div");
+const branch=
+document.createElement(
+"div"
+);
 
-const side =
-Math.random() < .5
-? "left"
-: "right";
+branch.className=
+"branch "+side;
 
-branch.className =
-"branch " + side;
+branch.style.bottom=
+bottom+"px";
 
-branch.style.bottom =
-(
-Math.random() * 350 + 60
-) + "px";
-
-tree.appendChild(branch);
+tree.appendChild(
+branch
+);
 
 branches.push({
-
 element:branch,
-
 side:side
-
 });
 
 }
 
 
-/* Chop */
+/* INITIAL TREE */
+
+function createTree(){
+
+document
+.querySelectorAll(
+".branch"
+)
+.forEach(
+b=>b.remove()
+);
+
+branches=[];
+
+createBranch(
+"left",
+100
+);
+
+createBranch(
+"right",
+180
+);
+
+createBranch(
+"left",
+260
+);
+
+createBranch(
+"right",
+340
+);
+
+}
+
+
+/* CHOP */
 
 function chop(side){
 
 if(!running)
 return;
 
-player.classList.add(
-"chopping"
+player.classList.remove(
+"chopLeft",
+"chopRight"
 );
 
-setTimeout(
-function(){
+void player.offsetWidth;
+
+if(side==="left"){
+
+player.classList.add(
+"chopLeft"
+);
+
+}else{
+
+player.classList.add(
+"chopRight"
+);
+
+}
+
+setTimeout(()=>{
 
 player.classList.remove(
-"chopping"
+"chopLeft",
+"chopRight"
 );
 
-},
-130
-);
+},180);
 
-const branch =
+
+/* CHECK BRANCH */
+
+const branch=
 branches[0];
 
-if(
-branch &&
-branch.side === side
-){
+if(branch){
+
+if(branch.side===side){
 
 endGame();
 
@@ -791,48 +883,60 @@ return;
 
 }
 
-score++;
-
-scoreText.innerText =
-"🏆 " + score;
-
-showHit();
-
-if(branch){
-
 branch.element.remove();
 
 branches.shift();
 
 }
 
-createBranch();
+
+/* SCORE */
+
+score++;
+
+scoreText.innerText=
+"🏆 "+score;
+
+showHit();
+
+
+/* NEW BRANCH */
+
+let newSide=
+Math.random()<.5
+?"left"
+:"right";
+
+createBranch(
+newSide,
+430
+);
 
 }
 
 
-/* Hit */
+/* HIT EFFECT */
 
 function showHit(){
 
-const hit =
-document.createElement("div");
+const hit=
+document.createElement(
+"div"
+);
 
-hit.className =
-"hit";
+hit.className="hit";
 
-hit.innerText =
-"💥";
+hit.innerText="💥";
 
 document
 .getElementById("game")
-.appendChild(hit);
+.appendChild(
+hit
+);
 
 setTimeout(
-function(){
-
+()=>{
 hit.remove();
-
 },
 400
 );
@@ -840,83 +944,20 @@ hit.remove();
 }
 
 
-/* Game Over */
-
-function endGame(){
-
-running = false;
-
-if(score > best){
-
-best = score;
-
-localStorage.setItem(
-"lumberjackBest",
-best
-);
-
-}
-
-document
-.getElementById("finalScore")
-.innerText = score;
-
-document
-.getElementById("bestScore")
-.innerText = best;
-
-gameover.style.display =
-"flex";
-
-}
-
-
-/* Restart */
-
-function restart(){
-
-score = 0;
-time = 30;
-running = true;
-
-scoreText.innerText =
-"🏆 0";
-
-timerText.innerText =
-"⏱️ 30";
-
-gameover.style.display =
-"none";
-
-branches.forEach(
-function(branch){
-
-branch.element.remove();
-
-}
-);
-
-branches = [];
-
-createBranch();
-
-}
-
-
-/* Timer */
+/* TIMER */
 
 setInterval(
-function(){
+()=>{
 
 if(!running)
 return;
 
 time--;
 
-timerText.innerText =
-"⏱️ " + time;
+timeText.innerText=
+"⏱️ "+time;
 
-if(time <= 0){
+if(time<=0){
 
 endGame();
 
@@ -927,15 +968,86 @@ endGame();
 );
 
 
-/* Local Leaderboard */
+/* END GAME */
 
-function saveLocalScore(){
+function endGame(){
 
-let scores =
+if(!running)
+return;
+
+running=false;
+
+document
+.getElementById(
+"finalScore"
+)
+.innerText=score;
+
+let best=
+Number(
+localStorage.getItem(
+"lumberjackBest"
+)||0
+);
+
+if(score>best){
+
+best=score;
+
+localStorage.setItem(
+"lumberjackBest",
+best
+);
+
+}
+
+document
+.getElementById(
+"bestScore"
+)
+.innerText=best;
+
+saveScore();
+
+gameOver.style.display=
+"flex";
+
+}
+
+
+/* RESTART */
+
+function restart(){
+
+score=0;
+
+time=30;
+
+running=true;
+
+scoreText.innerText=
+"🏆 0";
+
+timeText.innerText=
+"⏱️ 30";
+
+gameOver.style.display=
+"none";
+
+createTree();
+
+}
+
+
+/* SAVE SCORE */
+
+function saveScore(){
+
+let scores=
 JSON.parse(
 localStorage.getItem(
 "lumberjackScores"
-) || "[]"
+)||"[]"
 );
 
 scores.push({
@@ -947,41 +1059,48 @@ score:score
 });
 
 scores.sort(
-(a,b) =>
-b.score - a.score
+(a,b)=>
+b.score-a.score
 );
 
-scores =
-scores.slice(0,50);
+scores=
+scores.slice(
+0,
+50
+);
 
 localStorage.setItem(
 "lumberjackScores",
-JSON.stringify(scores)
+JSON.stringify(
+scores
+)
 );
 
 }
 
 
-function showLeaderboard(){
+/* OPEN RANKING */
 
-gameover.style.display =
+function openRanking(){
+
+gameOver.style.display=
 "none";
 
-leaderboard.style.display =
+leaderboard.style.display=
 "flex";
 
-let scores =
+let scores=
 JSON.parse(
 localStorage.getItem(
 "lumberjackScores"
-) || "[]"
+)||"[]"
 );
 
-ranking.innerHTML = "";
+ranking.innerHTML="";
 
-if(scores.length === 0){
+if(scores.length===0){
 
-ranking.innerHTML =
+ranking.innerHTML=
 "<div class='rank'>No scores yet</div>";
 
 return;
@@ -989,33 +1108,42 @@ return;
 }
 
 scores.forEach(
-function(item,index){
+(item,index)=>{
 
-let row =
-document.createElement("div");
+let row=
+document.createElement(
+"div"
+);
 
-row.className =
-"rank";
+row.className="rank";
 
-let medal =
-index === 0 ? "🥇"
-: index === 1 ? "🥈"
-: index === 2 ? "🥉"
-: "🏅";
+let medal=
+index===0
+?"🥇"
+:
+index===1
+?"🥈"
+:
+index===2
+?"🥉"
+:
+"🏅";
 
-row.innerHTML =
-"<span>" +
-medal +
-" #" +
-(index + 1) +
-" " +
-item.name +
-"</span>" +
-"<strong>" +
-item.score +
+row.innerHTML=
+"<span>"+
+medal+
+" #"+
+(index+1)+
+" "+
+item.name+
+"</span>"+
+"<strong>"+
+item.score+
 "</strong>";
 
-ranking.appendChild(row);
+ranking.appendChild(
+row
+);
 
 }
 );
@@ -1023,46 +1151,29 @@ ranking.appendChild(row);
 }
 
 
-function closeLeaderboard(){
+/* CLOSE RANKING */
 
-leaderboard.style.display =
+function closeRanking(){
+
+leaderboard.style.display=
 "none";
 
 }
 
 
-/* Save score when game ends */
-
-const oldEndGame =
-endGame;
-
-endGame =
-function(){
-
-if(running){
-
-saveLocalScore();
-
-}
-
-oldEndGame();
-
-};
-
-
-/* Keyboard */
+/* KEYBOARD */
 
 document.addEventListener(
 "keydown",
 function(e){
 
-if(e.key === "ArrowLeft"){
+if(e.key==="ArrowLeft"){
 
 chop("left");
 
 }
 
-if(e.key === "ArrowRight"){
+if(e.key==="ArrowRight"){
 
 chop("right");
 
@@ -1072,11 +1183,13 @@ chop("right");
 );
 
 
-/* Start */
+/* START */
 
-createBranch();
+createTree();
 
 </script>
 
+</div>
+
 </body>
-</html>
+    </html>
