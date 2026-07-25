@@ -2,283 +2,360 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LumberJack Game</title>
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0,
+maximum-scale=1.0, user-scalable=no">
+
+<title>LumberJack</title>
 
 <style>
-* {
-    box-sizing: border-box;
-    user-select: none;
+
+*{
+    box-sizing:border-box;
+    user-select:none;
+    -webkit-user-select:none;
 }
 
-body {
-    margin: 0;
-    overflow: hidden;
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background: #87ceeb;
+html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
 }
 
-#game {
-    height: 100vh;
-    max-width: 500px;
-    margin: auto;
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(
-        #87ceeb 0%,
-        #dff6ff 55%,
-        #6ab04c 55%
+body{
+    background:#87ceeb;
+}
+
+#game{
+    width:100%;
+    max-width:520px;
+    height:100vh;
+    height:100dvh;
+    margin:auto;
+    position:relative;
+    overflow:hidden;
+
+    background:
+    linear-gradient(
+        to bottom,
+        #72c9ff 0%,
+        #c8efff 48%,
+        #72bd58 48%,
+        #4d9d3e 100%
     );
 }
 
-#info {
-    position: absolute;
-    top: 15px;
-    width: 100%;
-    font-size: 24px;
-    font-weight: bold;
-    z-index: 5;
+/* Clouds */
+
+.cloud{
+    position:absolute;
+    width:90px;
+    height:28px;
+    background:white;
+    border-radius:30px;
+    opacity:.8;
 }
 
-#score {
-    margin-bottom: 5px;
+.cloud:before,
+.cloud:after{
+    content:"";
+    position:absolute;
+    background:white;
+    border-radius:50%;
 }
 
-#time {
-    color: red;
+.cloud:before{
+    width:40px;
+    height:40px;
+    left:15px;
+    top:-18px;
 }
 
-#tree {
-    position: absolute;
-    left: 50%;
-    bottom: 100px;
-    transform: translateX(-50%);
-    width: 100px;
-    height: 500px;
+.cloud:after{
+    width:50px;
+    height:50px;
+    right:10px;
+    top:-25px;
 }
 
-#trunk {
-    position: absolute;
-    left: 35px;
-    bottom: 0;
-    width: 30px;
-    height: 100%;
-    background: #8b4513;
-    border-radius: 8px;
+.cloud1{
+    top:90px;
+    left:8%;
 }
 
-.branch {
-    position: absolute;
-    width: 80px;
-    height: 25px;
-    background: #228b22;
-    border-radius: 20px;
+.cloud2{
+    top:170px;
+    right:8%;
+    transform:scale(.7);
 }
 
-.left {
-    left: -10px;
+/* Header */
+
+#header{
+    position:absolute;
+    top:12px;
+    left:0;
+    width:100%;
+    z-index:30;
+    text-align:center;
 }
 
-.right {
-    right: -10px;
+.title{
+    font-size:28px;
+    font-weight:900;
+    color:#fff;
+    text-shadow:
+    2px 2px 0 #654321,
+    0 3px 8px #333;
 }
 
-#axe {
-    position: absolute;
-    bottom: 105px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 60px;
-    z-index: 10;
+#score{
+    display:inline-block;
+    margin-top:6px;
+    padding:7px 18px;
+    border-radius:20px;
+    background:rgba(0,0,0,.45);
+    color:white;
+    font-size:20px;
+    font-weight:bold;
 }
 
-#buttons {
-    position: absolute;
-    bottom: 20px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    z-index: 20;
+#timer{
+    display:inline-block;
+    margin-left:5px;
+    padding:7px 15px;
+    border-radius:20px;
+    background:#e74c3c;
+    color:white;
+    font-size:20px;
+    font-weight:bold;
 }
 
-button {
-    width: 130px;
-    height: 65px;
-    border: none;
-    border-radius: 15px;
-    font-size: 28px;
-    font-weight: bold;
-    background: white;
-    box-shadow: 0 5px 0 #555;
+/* Game area */
+
+#forest{
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:55%;
 }
 
-button:active {
-    transform: translateY(4px);
-    box-shadow: 0 1px 0 #555;
+/* Tree */
+
+#tree{
+    position:absolute;
+    left:50%;
+    bottom:80px;
+    transform:translateX(-50%);
+    width:130px;
+    height:470px;
 }
 
-#over {
-    display: none;
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.75);
-    color: white;
-    z-index: 50;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+#trunk{
+    position:absolute;
+    left:45px;
+    bottom:0;
+    width:40px;
+    height:100%;
+    background:
+    linear-gradient(
+        90deg,
+        #63300e,
+        #a85d25,
+        #7b3e16
+    );
+    border-radius:12px 12px 5px 5px;
+    box-shadow:
+    inset 5px 0 rgba(255,255,255,.1),
+    5px 0 10px rgba(0,0,0,.25);
 }
 
-#over h1 {
-    font-size: 45px;
+/* Tree rings */
+
+#trunk:after{
+    content:"";
+    position:absolute;
+    top:10px;
+    left:7px;
+    width:25px;
+    height:5px;
+    border-radius:50%;
+    background:rgba(50,20,5,.4);
+    box-shadow:
+    0 45px rgba(50,20,5,.35),
+    0 100px rgba(50,20,5,.3),
+    0 160px rgba(50,20,5,.3),
+    0 230px rgba(50,20,5,.3),
+    0 300px rgba(50,20,5,.3);
 }
 
-#restart {
-    width: 200px;
-    font-size: 20px;
-}
-</style>
-</head>
+/* Branch */
 
-<body>
-
-<div id="game">
-
-    <div id="info">
-        <div id="score">Score: 0</div>
-        <div id="time">Time: 30</div>
-    </div>
-
-    <div id="tree">
-        <div id="trunk"></div>
-    </div>
-
-    <div id="axe">🪓</div>
-
-    <div id="buttons">
-        <button onclick="chop('left')">⬅️</button>
-        <button onclick="chop('right')">➡️</button>
-    </div>
-
-    <div id="over">
-        <h1>GAME OVER</h1>
-        <h2 id="final">Score: 0</h2>
-        <button id="restart" onclick="restart()">
-            🔄 PLAY AGAIN
-        </button>
-    </div>
-
-</div>
-
-<script>
-
-let score = 0;
-let time = 30;
-let gameRunning = true;
-let branches = [];
-
-const tree = document.getElementById("tree");
-const scoreText = document.getElementById("score");
-const timeText = document.getElementById("time");
-const over = document.getElementById("over");
-const finalScore = document.getElementById("final");
-
-function createBranch() {
-
-    const branch = document.createElement("div");
-
-    const side = Math.random() < 0.5
-        ? "left"
-        : "right";
-
-    branch.className = "branch " + side;
-
-    branch.style.bottom =
-        (Math.random() * 350 + 50) + "px";
-
-    tree.appendChild(branch);
-
-    branches.push({
-        element: branch,
-        side: side
-    });
+.branch{
+    position:absolute;
+    width:100px;
+    height:30px;
+    background:
+    linear-gradient(
+        #3c9d35,
+        #176b28
+    );
+    border-radius:20px;
+    box-shadow:
+    0 4px 4px rgba(0,0,0,.25);
+    z-index:5;
 }
 
-function chop(side) {
-
-    if (!gameRunning) return;
-
-    const branch = branches[0];
-
-    if (branch && branch.side === side) {
-        gameOver();
-        return;
-    }
-
-    score++;
-
-    scoreText.innerText =
-        "Score: " + score;
-
-    if (branches.length > 0) {
-        branches[0].element.remove();
-        branches.shift();
-    }
-
-    createBranch();
+.branch:after{
+    content:"";
+    position:absolute;
+    width:35px;
+    height:35px;
+    background:#2e8b35;
+    border-radius:50%;
+    top:-18px;
 }
 
-function gameOver() {
-
-    gameRunning = false;
-
-    finalScore.innerText =
-        "Score: " + score;
-
-    over.style.display = "flex";
+.branch.left{
+    left:-35px;
 }
 
-function restart() {
-
-    score = 0;
-    time = 30;
-    gameRunning = true;
-
-    scoreText.innerText = "Score: 0";
-    timeText.innerText = "Time: 30";
-
-    over.style.display = "none";
-
-    branches.forEach(function(branch) {
-        branch.element.remove();
-    });
-
-    branches = [];
-
-    createBranch();
+.branch.left:after{
+    left:15px;
 }
 
-function countdown() {
-
-    if (!gameRunning) return;
-
-    time--;
-
-    timeText.innerText =
-        "Time: " + time;
-
-    if (time <= 0) {
-        gameOver();
-    }
+.branch.right{
+    right:-35px;
 }
 
-createBranch();
+.branch.right:after{
+    right:15px;
+}
 
-setInterval(countdown, 1000);
+/* Lumberjack */
 
-</script>
+#player{
+    position:absolute;
+    left:50%;
+    bottom:72px;
+    transform:translateX(-50%);
+    width:110px;
+    height:130px;
+    z-index:15;
+    transition:
+    transform .12s ease;
+}
 
-</body>
-</html>
+.body{
+    position:absolute;
+    bottom:0;
+    left:28px;
+    width:55px;
+    height:75px;
+    background:#d64541;
+    border-radius:20px 20px 10px 10px;
+}
+
+.head{
+    position:absolute;
+    left:35px;
+    top:5px;
+    width:45px;
+    height:45px;
+    background:#f1b27c;
+    border-radius:50%;
+    z-index:3;
+}
+
+.hair{
+    position:absolute;
+    left:30px;
+    top:0;
+    width:55px;
+    height:22px;
+    background:#4a2b16;
+    border-radius:50% 50% 20% 20%;
+    z-index:4;
+}
+
+.hat{
+    position:absolute;
+    left:25px;
+    top:-5px;
+    width:65px;
+    height:18px;
+    background:#e74c3c;
+    border-radius:50%;
+    z-index:6;
+}
+
+.hat:after{
+    content:"";
+    position:absolute;
+    left:-8px;
+    bottom:-5px;
+    width:80px;
+    height:8px;
+    background:#c0392b;
+    border-radius:10px;
+}
+
+.leg{
+    position:absolute;
+    bottom:-5px;
+    width:20px;
+    height:45px;
+    background:#34495e;
+    border-radius:8px;
+}
+
+.leg1{
+    left:30px;
+}
+
+.leg2{
+    right:5px;
+}
+
+.axe{
+    position:absolute;
+    right:-20px;
+    top:40px;
+    font-size:55px;
+    transform:rotate(-35deg);
+    z-index:10;
+    transition:
+    transform .12s ease;
+}
+
+/* Chop animation */
+
+#player.chopping{
+    transform:
+    translateX(-50%)
+    scale(1.08);
+}
+
+#player.chopping .axe{
+    transform:
+    rotate(-115deg)
+    translate(-10px,20px);
+}
+
+/* Hit effect */
+
+.hit{
+    position:absolute;
+    left:50%;
+    bottom:270px;
+    transform:translateX(-50%);
+    font-size:40px;
+    z-index:50;
+    animation:hitAnim .35s ease-out forwards;
+}
+
+@key
