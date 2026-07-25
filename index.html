@@ -1,159 +1,284 @@
 <!DOCTYPE html>
-<html lang="my">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>အဖွဲ့လိုက် ပြိုင်မောင်းမယ့် ကားဂိမ်း</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #222; font-family: sans-serif; overflow: hidden; text-align: center; user-select: none; }
-        #gameContainer { position: relative; width: 100vw; height: 100vh; display: block; }
-        
-        /* ဂိမ်းကွင်းပြင် */
-        #gameCanvas { background: #333; width: 100%; max-width: 400px; height: 70vh; margin: 0 auto; display: block; border-left: 10px dashed #fff; border-right: 10px dashed #fff; position: relative; overflow: hidden; }
-        
-        /* ရမှတ် ပြသရန် */
-        #scoreBoard { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 24px; font-weight: bold; background: rgba(0,0,0,0.6); padding: 5px 15px; border-radius: 20px; z-index: 10; }
-        
-        /* ကားများ */
-        .car { position: absolute; width: 45px; height: 75px; border-radius: 5px; }
-        #player { background: #ff3333; left: 175px; bottom: 20px; box-shadow: 0 0 10px #ff3333; }
-        .enemy { background: #00bcd4; top: -80px; box-shadow: 0 0 10px #00bcd4; }
-        
-        /* ဖုန်းဖြင့် ဆော့ရန် ခလုတ်များ */
-        #controls { width: 100%; max-width: 400px; height: 25vh; margin: 0 auto; background: #111; display: block; position: relative; }
-        .btn { width: 50%; height: 100%; float: left; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; font-weight: bold; text-transform: uppercase; border: 2px solid #333; cursor: pointer; line-height: 25vh; text-align: center; }
-        #leftBtn { background: #2e7d32; }
-        #rightBtn { background: #1565c0; }
-        .btn:active { opacity: 0.7; }
-        
-        /* Game Over Screen */
-        #gameOverScreen { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); color: #fff; flex-direction: column; align-items: center; justify-content: center; z-index: 20; text-align: center; padding-top: 25vh; }
-        #gameOverScreen h1 { color: #ff3333; font-size: 40px; margin-bottom: 10px; }
-        #restartBtn { background: #ff9800; color: white; border: none; padding: 12px 30px; font-size: 20px; font-weight: bold; border-radius: 5px; margin-top: 15px; cursor: pointer; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LumberJack Game</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    user-select: none;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #87ceeb;
+}
+
+#game {
+    height: 100vh;
+    max-width: 500px;
+    margin: auto;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(
+        #87ceeb 0%,
+        #dff6ff 55%,
+        #6ab04c 55%
+    );
+}
+
+#info {
+    position: absolute;
+    top: 15px;
+    width: 100%;
+    font-size: 24px;
+    font-weight: bold;
+    z-index: 5;
+}
+
+#score {
+    margin-bottom: 5px;
+}
+
+#time {
+    color: red;
+}
+
+#tree {
+    position: absolute;
+    left: 50%;
+    bottom: 100px;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 500px;
+}
+
+#trunk {
+    position: absolute;
+    left: 35px;
+    bottom: 0;
+    width: 30px;
+    height: 100%;
+    background: #8b4513;
+    border-radius: 8px;
+}
+
+.branch {
+    position: absolute;
+    width: 80px;
+    height: 25px;
+    background: #228b22;
+    border-radius: 20px;
+}
+
+.left {
+    left: -10px;
+}
+
+.right {
+    right: -10px;
+}
+
+#axe {
+    position: absolute;
+    bottom: 105px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 60px;
+    z-index: 10;
+}
+
+#buttons {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    z-index: 20;
+}
+
+button {
+    width: 130px;
+    height: 65px;
+    border: none;
+    border-radius: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    background: white;
+    box-shadow: 0 5px 0 #555;
+}
+
+button:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 #555;
+}
+
+#over {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#over h1 {
+    font-size: 45px;
+}
+
+#restart {
+    width: 200px;
+    font-size: 20px;
+}
+</style>
 </head>
+
 <body>
 
-<div id="gameContainer">
-    <div id="gameCanvas">
-        <div id="scoreBoard">Score: <span id="score">0</span></div>
-        <div id="player" class="car"></div>
-    </div>
-    
-    <!-- Game Over ပြမယ့်နေရာ -->
-    <div id="gameOverScreen">
-        <h1>GAME OVER</h1>
-        <p>သင့်ရမှတ်: <span id="finalScore">0</span></p>
-        <button id="restartBtn" onclick="resetGame()">ပြန်ဆော့မယ်</button>
+<div id="game">
+
+    <div id="info">
+        <div id="score">Score: 0</div>
+        <div id="time">Time: 30</div>
     </div>
 
-    <!-- ဖုန်းထိန်းချုပ်ခလုတ်များ -->
-    <div id="controls">
-        <div id="leftBtn" class="btn">⬅️ ဘယ်</div>
-        <div id="rightBtn" class="btn">ညာ ➡️</div>
+    <div id="tree">
+        <div id="trunk"></div>
     </div>
+
+    <div id="axe">🪓</div>
+
+    <div id="buttons">
+        <button onclick="chop('left')">⬅️</button>
+        <button onclick="chop('right')">➡️</button>
+    </div>
+
+    <div id="over">
+        <h1>GAME OVER</h1>
+        <h2 id="final">Score: 0</h2>
+        <button id="restart" onclick="restart()">
+            🔄 PLAY AGAIN
+        </button>
+    </div>
+
 </div>
 
 <script>
-    const canvas = document.getElementById('gameCanvas');
-    const player = document.getElementById('player');
-    const scoreDisplay = document.getElementById('score');
-    const finalScoreDisplay = document.getElementById('finalScore');
-    const gameOverScreen = document.getElementById('gameOverScreen');
-    
-    let canvasWidth = canvas.clientWidth || 360;
-    let playerX = 150;
-    let score = 0;
-    let isGameOver = false;
-    let enemies = [];
-    let gameInterval, enemyInterval;
-    let moveLeft = false, moveRight = false;
 
-    // ကားရွှေ့ရန် ခလုတ်များ ချိတ်ဆက်ခြင်း
-    document.getElementById('leftBtn').addEventListener('touchstart', (e) => { e.preventDefault(); moveLeft = true; });
-    document.getElementById('leftBtn').addEventListener('touchend', (e) => { e.preventDefault(); moveLeft = false; });
-    document.getElementById('rightBtn').addEventListener('touchstart', (e) => { e.preventDefault(); moveRight = true; });
-    document.getElementById('rightBtn').addEventListener('touchend', (e) => { e.preventDefault(); moveRight = false; });
-    
-    // PC & Mouse / Click fallback
-    document.getElementById('leftBtn').addEventListener('mousedown', () => moveLeft = true);
-    document.getElementById('leftBtn').addEventListener('mouseup', () => moveLeft = false);
-    document.getElementById('rightBtn').addEventListener('mousedown', () => moveRight = true);
-    document.getElementById('rightBtn').addEventListener('mouseup', () => moveRight = false);
+let score = 0;
+let time = 30;
+let gameRunning = true;
+let branches = [];
 
-    document.addEventListener('keydown', (e) => {
-        if(e.key === 'ArrowLeft') moveLeft = true;
-        if(e.key === 'ArrowRight') moveRight = true;
+const tree = document.getElementById("tree");
+const scoreText = document.getElementById("score");
+const timeText = document.getElementById("time");
+const over = document.getElementById("over");
+const finalScore = document.getElementById("final");
+
+function createBranch() {
+
+    const branch = document.createElement("div");
+
+    const side = Math.random() < 0.5
+        ? "left"
+        : "right";
+
+    branch.className = "branch " + side;
+
+    branch.style.bottom =
+        (Math.random() * 350 + 50) + "px";
+
+    tree.appendChild(branch);
+
+    branches.push({
+        element: branch,
+        side: side
     });
-    document.addEventListener('keyup', (e) => {
-        if(e.key === 'ArrowLeft') moveLeft = false;
-        if(e.key === 'ArrowRight') moveRight = false;
+}
+
+function chop(side) {
+
+    if (!gameRunning) return;
+
+    const branch = branches[0];
+
+    if (branch && branch.side === side) {
+        gameOver();
+        return;
+    }
+
+    score++;
+
+    scoreText.innerText =
+        "Score: " + score;
+
+    if (branches.length > 0) {
+        branches[0].element.remove();
+        branches.shift();
+    }
+
+    createBranch();
+}
+
+function gameOver() {
+
+    gameRunning = false;
+
+    finalScore.innerText =
+        "Score: " + score;
+
+    over.style.display = "flex";
+}
+
+function restart() {
+
+    score = 0;
+    time = 30;
+    gameRunning = true;
+
+    scoreText.innerText = "Score: 0";
+    timeText.innerText = "Time: 30";
+
+    over.style.display = "none";
+
+    branches.forEach(function(branch) {
+        branch.element.remove();
     });
 
-    function createEnemy() {
-        if (isGameOver) return;
-        const enemy = document.createElement('div');
-        enemy.classList.add('car', 'enemy');
-        const randomX = Math.floor(Math.random() * (canvasWidth - 55));
-        enemy.style.left = randomX + 'px';
-        canvas.appendChild(enemy);
-        enemies.push({ element: enemy, top: -80, left: randomX });
+    branches = [];
+
+    createBranch();
+}
+
+function countdown() {
+
+    if (!gameRunning) return;
+
+    time--;
+
+    timeText.innerText =
+        "Time: " + time;
+
+    if (time <= 0) {
+        gameOver();
     }
+}
 
-    function updateGame() {
-        if (isGameOver) return;
+createBranch();
 
-        // Player ရွှေ့ခြင်း
-        if (moveLeft && playerX > 10) playerX -= 6;
-        if (moveRight && playerX < (canvasWidth - 60)) playerX += 6;
-        player.style.left = playerX + 'px';
+setInterval(countdown, 1000);
 
-        // ရန်သူကားများ ရွှေ့ခြင်း
-        for (let i = enemies.length - 1; i >= 0; i--) {
-            let enemy = enemies[i];
-            enemy.top += 7;
-            enemy.element.style.top = enemy.top + 'px';
-
-            if (enemy.top > canvas.clientHeight) {
-                enemy.element.remove();
-                enemies.splice(i, 1);
-                score += 10;
-                scoreDisplay.innerText = score;
-            }
-
-            // တိုက်မိခြင်း ရှိ/မရှိ စစ်ဆေးခြင်း
-            if (enemy.top + 75 > (canvas.clientHeight - 95) && enemy.top < (canvas.clientHeight - 20)) {
-                if (playerX < enemy.left + 45 && playerX + 45 > enemy.left) {
-                    endGame();
-                }
-            }
-        }
-    }
-
-    function endGame() {
-        isGameOver = true;
-        clearInterval(gameInterval);
-        clearInterval(enemyInterval);
-        finalScoreDisplay.innerText = score;
-        gameOverScreen.style.display = 'block';
-    }
-
-    function resetGame() {
-        enemies.forEach(e => e.element.remove());
-        enemies = [];
-        score = 0;
-        playerX = 150;
-        isGameOver = false;
-        scoreDisplay.innerText = score;
-        gameOverScreen.style.display = 'none';
-        
-        gameInterval = setInterval(updateGame, 20);
-        enemyInterval = setInterval(createEnemy, 1000);
-    }
-
-    gameInterval = setInterval(updateGame, 20);
-    enemyInterval = setInterval(createEnemy, 1000);
 </script>
+
 </body>
 </html>
